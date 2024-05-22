@@ -1,12 +1,20 @@
 import React from 'react';
+import { SearchBarContainer, SearchInput, SearchButton, Icon, FilterIconContainer, FilterIcon } from './style';
+import { FaSearch } from 'react-icons/fa';
 
-function SearchBar() {
+const SearchBar = () => {
   return (
-    <div className="search-bar">
-      <input type="text" placeholder="Search by Category, Company or..." />
-      <button type="submit">Search</button>
-    </div>
+    <SearchBarContainer>
+      <SearchInput type="text" placeholder="검색하고자하는 API를 입력해보세요!" />
+      <FilterIconContainer>
+        <FilterIcon />
+        <FilterIcon />
+      </FilterIconContainer>
+      <SearchButton>
+        <Icon as={FaSearch} />
+      </SearchButton>
+    </SearchBarContainer>
   );
-}
+};
 
 export default SearchBar;
