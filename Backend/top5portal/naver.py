@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
 import json
+import re
 from bs4 import BeautifulSoup
 
 headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}
@@ -12,7 +13,6 @@ def extract_info(url):
     # 파싱
     soup = BeautifulSoup(res.text, "lxml") #모든 html을 객체로
 
-    # 이름 추출
     name_tag = soup.find('h1')
     if name_tag:
         name = name_tag.text
@@ -20,24 +20,35 @@ def extract_info(url):
         name = "Description not found"
 
     # 설명 추출
-    description_tag = soup.find('h4', id='설명')
+    description_tag = soup.find(id='설명')
     if description_tag:
-        description = description_tag.find_next_sibling('p').text
+        description = description_tag.find_next('p').text
     else:
-        description = "Description not found"
+        description_tag = soup.find('h4', id=re.compile(r"개요$"))
+        if description_tag:
+            description = description_tag.find_next('p').text
+        else:
+            description = "Description not found"
 
     # 요청 URL 추출
-    request_url_tag = soup.find('h4', id='요청-url')
+    request_url_tag = soup.find(id='요청-url')
     if request_url_tag:
         request_url = request_url_tag.find_next('code').text
     else:
         request_url = "Request URL not found"
 
+    # 메서드 추출
+    method_tag = soup.find(id='http-메서드')
+    if method_tag:
+        method = method_tag.find_next('p').text
+    else:
+        method = "method not found"
+
     # 파라미터 추출
     parameters = []
-    parameter_table = soup.find('h4', id='파라미터')
+    parameter_table = soup.find(id='파라미터')
     if parameter_table:
-        parameter_table = parameter_table.find_next('table')
+        parameter_table = parameter_table.find_next('table') #이건뭐더라...?
         for row in parameter_table.find_all('tr')[1:]:
             cols = row.find_all('td')
             parameter = {
@@ -57,7 +68,7 @@ def extract_info(url):
 
     # 응답 추출
     responses = []
-    response_table = soup.find('h4', id='응답')
+    response_table = soup.find(id='응답')
     if response_table:
         response_table = response_table.find_next('table')
         for row in response_table.find_all('tr')[1:]:
@@ -80,6 +91,7 @@ def extract_info(url):
         'name': name,
         'description': description,
         'request_url': request_url,
+        'method': method,
         'parameters': parameters,
         'responses': responses
     }
@@ -103,15 +115,13 @@ api_info = [
     {"id": "전문자료 검색", "url": "https://developers.naver.com/docs/serviceapi/search/doc/doc.md#%EC%A0%84%EB%AC%B8%EC%9E%90%EB%A3%8C"},
     #
     {"id": "단축 URL", "url": "https://developers.naver.com/docs/utils/shortenurl/"},
-    {"id": "이미지 캡차", "url": "https://developers.naver.com/docs/utils/captcha/overview/"},
-    {"id": "음성 캡차", "url": "https://developers.naver.com/docs/utils/scaptcha/overview/"},
+    {"id": "이미지 캡차", "url": "https://developers.naver.com/docs/utils/captcha/reference/"},
+    {"id": "음성 캡차", "url": "https://developers.naver.com/docs/utils/scaptcha/reference/"},
     {"id": "네이버 공유하기", "url": "https://developers.naver.com/docs/share/navershare/"},
     {"id": "네이버 앱 연동", "url": "https://developers.naver.com/docs/utils/mobileapp/"},
     {"id": "네이버 오픈메인", "url": "https://developers.naver.com/docs/openmain/"},
-    # 로그인
-    {"id": "네이버 로그인", "url": "https://developers.naver.com/docs/login/api/api.md"},
 ]
-results = [extract_info(info['url']) for info in api_info]
+results = [extract_info(info['url']) for info in api_info] #get_info!!!!!!!!!!!!!!!
 
 # print(json.dumps(result, indent=4, ensure_ascii=False))
 # 출력
@@ -119,13 +129,11 @@ with open('result.txt', 'w', encoding='utf-8') as txt_file:
     for n, result in enumerate(results, start=1):
         txt_file.write(f"\n[{n}] {result['name']}\n")
         txt_file.write(f"    설명: {result['description']}\n")
-        txt_file.write(f"    요청 URL: {result['request_url']}")
+        txt_file.write(f"    메서드: {result['method']}\n")
+        txt_file.write(f"    요청 URL: {result['request_url']}\n\n")
+        txt_file.write(f"    요청:\n")
         for i, param in enumerate(result['parameters'], start=1):
-            txt_file.write(f"    {i}. Parameter: {param['parameter']}")
-            txt_file.write(f"        Type: {param['type']}")
-            txt_file.write(f"        Required: {'Yes' if param['required'] else 'No'}")
-            txt_file.write(f"        Description: {param['description']}\n")
+            txt_file.write(f"        {i}. {param['parameter']} / {param['type']} / {param['description']}\n")
+        txt_file.write(f"    응답:\n")
         for i, response in enumerate(result['responses'], start=1):
-            txt_file.write(f"    {i}. Response: {response['response']}")
-            txt_file.write(f"        Type: {response['type']}")
-            txt_file.write(f"        Description: {response['description']}\n")
+            txt_file.write(f"        {i}. {response['response']} / {response['type']} / {response['description']}\n")
