@@ -1,0 +1,127 @@
+
+[1] 네이버 로그인 인증 요청, 접근 토큰 발급/갱신/삭제 요청
+    설명: 네이버 로그인 API는 네이버 로그인 인증 요청 API, 접근 토큰 발급/갱신/삭제 요청API로 구성되어 있습니다. 네이버 로그인 인증 요청 API는 여러분의 웹 또는 앱에 네이버 로그인 화면을 띄우는 API입니다. 이용자가 네이버 회원 인증에 성공하면 API로부터 받은 code 값을 이용해서 접근 토큰 발급 요청 API를 호출합니다. 접근 토큰 발급 요청 API를 통해 받은 접근 토큰(access token) 값은 다음과 같이 회원 프로필 조회를 비롯하여 여러가지 로그인 오픈 API를 호출하는데 사용할 수 있습니다.
+    요청 URL:
+    - https://nid.naver.com/oauth2.0/authorize
+    - https://nid.naver.com/oauth2.0/token
+    메서드:
+    - GET / POST
+    - GET / POST
+    (1) 요청: 
+        1. response_type / string / 인증 과정에 대한 내부 구분값으로 'code'로 전송해야 함
+        2. client_id / string / 애플리케이션 등록 시 발급받은 Client ID 값
+        3. redirect_uri / string / 애플리케이션을 등록 시 입력한 Callback URL 값으로 URL 인코딩을 적용한 값
+        4. state / string / 사이트 간 요청 위조(cross-site request forgery) 공격을 방지하기 위해 애플리케이션에서 생성한 상태 토큰값으로 URL 인코딩을 적용한 값을 사용
+        5. scope / string / 접근 허용 범위를 처리하기 위한 내부 구분값으로 전송할 필요 없음
+    (2) 요청: 
+        1. grant_type / string / 인증 과정에 대한 구분값1. 발급:'authorization_code'2. 갱신:'refresh_token'3. 삭제: 'delete'
+        2. client_id / string / 애플리케이션 등록 시 발급받은 Client ID 값
+        3. client_secret / string / 애플리케이션 등록 시 발급받은 Client secret 값
+        4. code / string / 로그인 인증 요청 API 호출에 성공하고 리턴받은 인증코드값 (authorization code)
+        5. state / string / 사이트 간 요청 위조(cross-site request forgery) 공격을 방지하기 위해 애플리케이션에서 생성한 상태 토큰값으로 URL 인코딩을 적용한 값을 사용
+        6. refresh_token / string / 네이버 사용자 인증에 성공하고 발급받은 갱신 토큰(refresh token)
+        7. access_token / string / 발급받은 접근 토큰으로URL 인코딩을 적용한 값을 사용
+        8. service_provider / string / 인증 제공자 이름으로 'NAVER'로 세팅해 전송
+    (1) 응답
+        1. code / string / 네이버 로그인 인증에 성공하면 반환받는 인증 코드, 접근 토큰(access token) 발급에 사용
+        2. state / string / 사이트 간 요청 위조 공격을 방지하기 위해 애플리케이션에서 생성한 상태 토큰으로 URL 인코딩을 적용한 값
+        3. error / string / 네이버 로그인 인증에 실패하면 반환받는 에러 코드
+        4. error_description / string / 네이버 로그인 인증에 실패하면 반환받는 에러 메시지
+    (2) 응답
+        1. access_token / string / 접근 토큰, 발급 후 expires_in 파라미터에 설정된 시간(초)이 지나면 만료됨
+        2. refresh_token / string / 갱신 토큰, 접근 토큰이 만료될 경우 접근 토큰을 다시 발급받을 때 사용
+        3. token_type / string / 접근 토큰의 타입으로 Bearer와 MAC의 두 가지를 지원
+        4. expires_in / integer / 접근 토큰의 유효 기간(초 단위)
+        5. error / string / 에러 코드
+        6. error_description / string / 에러 메시지
+
+[2] 네이버 회원 프로필 조회
+    설명: 네이버 로그인을 통해 인증받은 받고 정보 제공에 동의한 회원에 대해 회원 메일 주소, 별명, 프로필 사진, 생일, 연령대 값을 조회할 수 있는 로그인 오픈 API입니다. API 호출 결과로 네이버 아이디값은 제공하지 않으며, 대신 'id'라는 애플리케이션당 유니크한 일련번호값을 이용해서 자체적으로 회원정보를 구성하셔야 합니다. 기존 REST API처럼 요청 URL과 요청 변수로 호출하는 방법은 동일하나, OAuth 2.0 인증 기반이므로 추가적으로네이버 로그인 API를 통해 접근 토큰(access token)을 발급받아, HTTP로 호출할 때 Header에 접근 토큰 값을 전송해 주시면 활용 가능합니다.
+    요청 URL:
+    - https://openapi.naver.com/v1/nid/me
+    메서드:
+    - GET
+    (1) 요청: 
+    (1) 응답
+        1. resultcode / String / API 호출 결과 코드
+        2. message / String / 호출 결과 메시지
+        3. response/id / String / 동일인 식별 정보네이버 아이디마다 고유하게 발급되는 유니크한 일련번호 값(API 호출 결과로 네이버 아이디값은 제공하지 않으며, 대신 'id'라는 애플리케이션당 유니크한 일련번호값을 이용해서 자체적으로 회원정보를 구성하셔야 합니다.)
+        4. response/nickname / String / 사용자 별명(별명이 설정되어 있지 않으면 id*** 형태로 리턴됩니다.)
+        5. response/name / String / 사용자 이름
+        6. response/email / String / 사용자 메일 주소기본적으로 네이버 내정보에 등록되어 있는 '기본 이메일' 즉 네이버ID@naver.com 값이나,
+                사용자가 다른 외부메일로 변경했을 경우는 변경된 이메일 주소로 됩니다.
+        7. response/gender / String / 성별- F: 여성- M: 남성- U: 확인불가
+        8. response/age / String / 사용자 연령대
+        9. response/birthday / String / 사용자 생일(MM-DD 형식)
+        10. response/profile_image / String / 사용자 프로필 사진 URL
+        11. response/birthyear / String / 출생연도
+        12. response/mobile / String / 휴대전화번호
+
+[3] 특정 카페 가입하기, 카페 게시판에 글 쓰기(상품게시판은 입력 불가)
+    설명: 네이버 카페에 가입 또는 카페 게시판에 글을 올릴 수 있는 로그인 오픈 API입니다. 기존 REST API처럼 요청 URL과 요청 변수로 호출하는 방법은 동일하나, OAuth 2.0 인증 기반이므로 추가적으로네이버 로그인 API를 통해 접근 토큰(access token)을 발급받아,
+        HTTP로 호출할 때 Header에 접근 토큰을 같이 전송해 주시면 활용 가능합니다.
+    요청 URL:
+    - https://openapi.naver.com/v1/cafe/{clubid}/members
+    - https://openapi.naver.com/v1/cafe/{clubid}/menu/{menuid}/articles
+    메서드:
+    - POST
+    - POST
+    (1) 요청: 
+        1. nickname / string / 카페에 가입할 때 지정할 별명- URL 인코딩하여 요청함- 해당 string은 UTF-8로 encode 후 MS949로 재 encode를 수행한 값
+        2. clubid / int / 카페 아이디카페 관리 페이지와 같이 카페 내 이동 시 clubid로 표현되는 파라미터는 카페의 고유 아이디입니다.
+                (https://cafe.naver.com/ManageHome.nhn?clubid=14447337 의 14447337값이 clubid입니다.)
+    (2) 요청: 
+        1. clubid / int / 카페 아이디카페 관리 페이지와 같이 카페 내 이동 시 clubid로 표현되는 파라미터는 카페의 고유 아이디이다.
+                (https://cafe.naver.com/ManageHome.nhn?clubid=14447337 의 14447337값이 clubid입니다.)
+        2. menuid / int / 게시판 아이디
+        3. subject / String / 게시글 제목- URL 인코딩하여 요청함- 해당 string은 UTF-8로 encode 후 MS949로 재 encode를 수행한 값
+        4. content / String / 게시글 내용- html태그 사용 가능 (예: 줄바꿈은 <br> 사용)
+                - 아래 태그는 사용 불가- <iframe> 태그나 <embed> 태그는 신뢰할 수 있는 사이트에만 허용된다.- <script> 태그는 사용할 수 없다.- URL 인코딩하여 요청함- 해당 string은 UTF-8로 encode 후 MS949로 재 encode를 수행한 값
+        5. image / File / 이미지 첨부 파일(복수의 이미지 등록 가능)- image 파라미터를 사용할 때는 데이터를 multipart 형식으로 전송해야 한다.- 이미지 파일을 2개 이상 첨부할 때는 파라미터를 중복해서 사용한다.
+        6. openyn / boolean / 게시글 공개 설정- true: 전체 공개- false: 멤버 공개
+        7. searchopen / boolean / 게시글 검색 설정- true: 네이버에서 검색 허용- false: 네이버에서 검색 허용 안 함openyn 파라미터를 true로 설정하면 searchopen 파라미터는 true로 설정된다.
+        8. replyyn / boolean / 게시글 덧글 설정- true: 덧글 허용- false: 덧글 허용 안 함
+        9. scrapyn / boolean / 게시글 스크랩 설정- true: 스크랩 허용- false: 스크랩 허용 안 함
+        10. metoo / boolean / 블로그, 카페 보내기 설정- true: 보내기 허용- false: 보내기 허용 안 함
+        11. autosourcing / boolean / 게시글 자동 출처 설정- true: 자동 출처 사용- false: 자동 출처 사용 안 함
+        12. rclick / boolean / 마우스 오른쪽 버튼 사용 설정- true: 마우스 오른쪽 버튼 사용 허용- false: 마우스 오른쪽 버튼 사용 허용 안 함
+        13. ccl / boolean / CCL 사용 설정- true: CCL 사용- false: CCL 사용 안 함
+    (1) 응답
+        1. status / int / 200: 가입 성공, 500: 가입 실패
+    (2) 응답
+        1. status / int / 200: 게시글 글쓰기 성공, 500: 게시글 쓰기 실패
+        2. cafeUrl / String / 카페 URL.카페 주소에서 https://cafe.naver.com/을 제외한 부분이다(예: 'https://cafe.naver.com/ndevcenter'에서 ' ndevcenter').
+        3. articleId / int / 게시글 아이디
+        4. articleUrl / String / 작성된 게시글의 링크 주소
+
+[4] 캘린더 일정 추가
+    설명: 네이버 사용자 캘린더에 일정을 추가할 수 있는 로그인 오픈 API입니다. 기존 REST API처럼 요청 URL과 요청 변수로 호출하는 방법은 동일하나, OAuth 2.0 인증 기반이므로 추가적으로네이버 로그인 API를 통해 접근 토큰(access token)을 발급받아,
+        HTTP로 호출할 때 Header에 접근 토큰을 같이 전송해 주시면 활용 가능합니다.
+    요청 URL:
+    - https://openapi.naver.com/calendar/createSchedule.json
+    메서드:
+    - POST
+    (1) 요청: 
+        1. calendarId / string / 캘린더ID.defaultCalendarId를 입력하면 기본 캘린더에 일정이 생성된다.
+        2. scheduleIcalString / string / iCalendar 데이터
+    (1) 응답
+        1. result / string / 성공 시 'success' 출력
+        2. returnValue / string / processType, 일정이 생성된 캘린더 ID (create, modify)
+
+[5] 네이버 페이 배송지 정보 조회
+    설명: 네이버 페이에 등록한 배송지 정보를 조회할수 있는 로그인 오픈 API입니다. 기존 REST API처럼 요청 URL과 요청 변수로 호출하는 방법은 동일하나, OAuth 2.0 인증 기반이므로 추가적으로네이버 로그인 API를 통해 접근 토큰(access token)을 발급받아,
+HTTP로 호출할 때 Header에 접근 토큰을 같이 전송해 주시면 활용 가능합니다.
+    요청 URL:
+    - https://openapi.naver.com/v1/nid/payaddress
+    메서드:
+    - GET
+    (1) 요청: 
+    (1) 응답
+        1. result / String / 결과코드
+        2. data / Object / 네이버페이 배송지 정보
+        3. data.receiverName / String / 사용자명
+        4. data.zipCode / String / 우편번호
+        5. data.baseAddress / String / 기본주소
+        6. data.detailAddress / String / 상세주소
+        7. data.roadNameYn / String / 도로명 주소 Y/N
+        8. data.telNo / String / 네이버페이 연락처
