@@ -1,19 +1,26 @@
 import React from 'react';
-import Header from './component/Header';
 import SearchBar from './component/SearchBar';
-import APIStatusTable from './component/APIStatusTable';
-import UserInfo from './component/UserInfo';
-import './App.css';
+import NavBar from './component/NavBar';
+import CategoryIcons from './pages/main/CategoryIcons';
+import Banner from './pages/main/Banner';
+// import CategoryIcons from './components/CategoryIcons';
+// import ApiShareSection from './components/ApiShareSection';
+// import OrderTable from './components/OrderTable';
+// import QnASection from './components/QnASection';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Header />
+    <div>
+      <NavBar/>
       <SearchBar />
-      <APIStatusTable />
-      <UserInfo />
+      <CategoryIcons/>
+      <Banner/>
+      {/* <CategoryIcons />
+      <ApiShareSection />
+      <OrderTable />
+      <QnASection /> */}
     </div>
   );
-}
+};
 
 export default App;
