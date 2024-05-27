@@ -7,10 +7,10 @@ app.use(bodyParser.json());
 
 // MySQL 데이터베이스 연결 설정
 const connection = mysql.createConnection({
-  host: "dochi-database.ct0gqo2iq4mj.ap-northeast-2.rds.amazonaws.com",
-  user: "dochiadmin",
-  password: "sung1105122", // 실제 비밀번호로 교체
-  database: "dochidatabase"
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
 });
 
 // 데이터베이스 연결
@@ -40,9 +40,8 @@ app.post('/signup', (req, res) => {
   });
 });
 
-
-app.listen(8080, () => {
-    console.log('http://localhost:8080 에서 서버 실행중')
-})
-
-
+// 서버 시작
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
