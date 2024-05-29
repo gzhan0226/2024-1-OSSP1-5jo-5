@@ -1,24 +1,9 @@
 const express = require('express');
-const mysql = require('mysql');
-
 const app = express();
+const connection = require('../Database/db.js');
+const bodyParser = require('body-parser');
 
-// MySQL 데이터베이스 연결 설정
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASEss
-});
-
-// 데이터베이스 연결
-connection.connect(err => {
-  if (err) {
-    console.error('MySQL connection error:', err);
-    return;
-  }
-  console.log('MySQL connected...');
-});
+app.use(bodyParser.json());
 
 // 모든 API 정보를 가져와서 보여주는 엔드포인트
 app.get('/apis', (req, res) => {

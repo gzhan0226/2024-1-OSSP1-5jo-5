@@ -1,26 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
-
 const app = express();
+const connection = require('../Database/db.js');
+
 app.use(bodyParser.json());
-
-// MySQL 데이터베이스 연결 설정
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE
-});
-
-// 데이터베이스 연결
-connection.connect(err => {
-  if (err) {
-    console.error('MySQL connection error:', err);
-    return;
-  }
-  console.log('MySQL connected...');
-});
 
 // 회원가입 API 엔드포인트
 app.post('/signup', (req, res) => {
