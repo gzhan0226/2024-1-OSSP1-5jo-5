@@ -1,41 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
-
 const app = express();
+const connection = require('./Database/db.js');
+
+
 app.use(bodyParser.json());
 
-require('dotenv').config();
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE
-});
-// 데이터베이스 연결
-connection.connect(err => {
-  if (err) {
-    console.error('MySQL connection error:', err);
-    return;
-  }
-  console.log('MySQL connected...');
-});
-
-// 회원가입 API 엔드포인트
-app.post('/signup', (req, res) => {
-  const { user_name, user_email, user_password } = req.body;
-
-  // 사용자 정보를 데이터베이스에 삽입하는 쿼리
-  const query = 'INSERT INTO Users (user_name, user_email, user_password) VALUES (?, ?, ?)';
-  connection.query(query, [user_name, user_email, user_password], (err, results) => {
+// 모든 API 정보를 가져와서 보여주는 엔드포인트
+app.get('/apis', (req, res) => {
+  // 데이터 조회 쿼리 실행
+  const query = 'SELECT APIs.*, Users.user_name FROM APIs JOIN Users ON APIs.user_id = Users.user_id';
+  connection.query(query, (err, results) => {
     if (err) {
-      console.error('Error signing up:', err);
-      res.status(500).send('Error signing up');
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error executing query' });
       return;
     }
 
-    // 회원가입 성공 시 클라이언트에 응답
-    res.status(200).send('Signed up successfully');
+    // 결과를 JSON 형태로 응답
+    res.json(results);
   });
 });
 
