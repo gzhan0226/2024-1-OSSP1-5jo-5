@@ -10,6 +10,8 @@ const questionRoutes = require("./Routes/question");
 app.use("/api", questionRoutes);
 const generalRoutes = require("./Routes/general");
 app.use("/api", generalRoutes);
+const postsRoutes = require("./Routes/posts");
+app.use("/api/posts", postsRoutes);
 
 // 서버 시작
 const port = 3000;
