@@ -1,27 +1,9 @@
 // question.js
-const express = require("express");
-const mysql = require("mysql");
-const router = express.Router();
-
-// MySQL 데이터베이스 연결 설정
-require("dotenv").config();
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-});
-
-// 데이터베이스 연결
-connection.connect((err) => {
-  if (err) {
-    console.error("MySQL connection error:", err);
-    return;
-  }
-  console.log("MySQL connected...");
-});
-
 // 질문 게시판 작성/조회/수정/삭제
+
+const express = require("express");
+const router = express.Router();
+const connection = require('../Database/db');
 
 // 질문 게시판 작성
 const createQuestion = (req, res) => {
