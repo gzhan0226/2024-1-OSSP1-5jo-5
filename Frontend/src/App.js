@@ -3,10 +3,9 @@ import SearchBar from './component/SearchBar';
 import NavBar from './component/NavBar';
 import CategoryIcons from './pages/main/CategoryIcons';
 import Banner from './pages/main/Banner';
-// import CategoryIcons from './components/CategoryIcons';
-// import ApiShareSection from './components/ApiShareSection';
-// import OrderTable from './components/OrderTable';
-// import QnASection from './components/QnASection';
+import Table from './pages/main/Table';
+import PostBoard from './pages/main/Board';
+
 
 const App = () => {
   return (
@@ -15,6 +14,8 @@ const App = () => {
       <SearchBar />
       <CategoryIcons/>
       <Banner/>
+      <Table/>
+      <PostBoard/>
       {/* <CategoryIcons />
       <ApiShareSection />
       <OrderTable />
