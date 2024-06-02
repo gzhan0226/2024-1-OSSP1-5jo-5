@@ -112,9 +112,9 @@ const deleteGeneral = (req, res) => {
   });
 };
 
-router.post("/general", createGeneral);
-router.get("/general", getGeneralDetails);
-router.put("/general", updateGeneral);
-router.delete("/general", deleteGeneral);
+router.post("/", createGeneral);
+router.get("/", getGeneralDetails);
+router.put("/", updateGeneral);
+router.delete("/", deleteGeneral);
 
 module.exports = router;

@@ -123,9 +123,9 @@ const deleteQuestion = (req, res) => {
   });
 };
 
-router.post("/question", createQuestion);
-router.get("/question", getQuestionDetails);
-router.put("/question", updateQuestion);
-router.delete("/question", deleteQuestion);
+router.post("/", createQuestion);
+router.get("/", getQuestionDetails);
+router.put("/", updateQuestion);
+router.delete("/", deleteQuestion);
 
 module.exports = router;
