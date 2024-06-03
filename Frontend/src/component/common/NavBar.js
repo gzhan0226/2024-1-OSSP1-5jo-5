@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavBarContainer, MenuItem, MenuIcon, UserProfile, UserName, UserStatus, Logo, LogoText, LogoIcon } from './style';
+import { NavBarContainer, MenuItem, MenuIcon, UserProfile, UserName, UserStatus, Logo, LogoText, LogoIcon } from './Style';
 import { FaHome, FaSearch, FaQuestionCircle, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
 
 const NavBar = () => {

@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 import { FaSearch } from 'react-icons/fa';
 
+//여기서부터는 nav.js 
 export const NavBarContainer = styled.div`
-  width: 250px;
+  width: 15%;
   height: 100vh;
-  background-color: white;
+  position: fixed;
+  background-color: pink;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -68,47 +70,54 @@ export const UserStatus = styled.div`
 
 
 //여기서부터는 SearchBar.js
-
-
 export const SearchBarContainer = styled.div`
+  width:84vw;
+  height:15vh;
+  display:flex;
+  justify-conten:center;
+  background-color: rgb(245,245,251);
+  margin: 0px 290px;
+  text-align: center;
+  display: fixed;
+  overflow-x: hidden;
+`
+export const Bar = styled.div`
   display: flex;
   align-items: center;
-  background-color: white;
   border-radius: 50px;
   overflow: hidden;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
+  max-width: 800px;
+  background-color: rgb(245,245,251);
+  height:40%;
+  margin:auto;
 `;
 
 export const SearchInput = styled.input`
   flex: 1;
-  border: none;
   padding: 10px 20px;
-  font-size: 16px;
-  color: #888;
+  font-size: 20px;
+  color: gray;
   &:focus {
     outline: none;
   }
+  height:100%;
+  border: none;
 `;
 
 export const SearchButton = styled.button`
+  height:100%;
   background-color: #5865f2;
-  border: none;
   padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  &:hover {
-    background-color: #4752c4;
-  }
+  border: none;
 `;
 
 export const Icon = styled(FaSearch)`
   color: white;
-  font-size: 18px;
+  font-size: 20px;
 `;
 
 export const FilterIconContainer = styled.div`

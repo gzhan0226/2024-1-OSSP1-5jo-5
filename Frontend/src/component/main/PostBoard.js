@@ -1,9 +1,9 @@
 import React from 'react';
-import { Card, Board,Header } from './style';
+import { Card, Board,Header,BoardContainer } from './Style';
   
 const PostBoard = () => {  
     return (
-        <>
+        <BoardContainer>
           <Header>Q & A 게시판</Header>
           <Board>
             {Array.from({ length: 10 }).map((_, index) => (
@@ -12,7 +12,7 @@ const PostBoard = () => {
               </Card>
             ))}
           </Board>
-        </>
+        </BoardContainer>
       );
     };
 

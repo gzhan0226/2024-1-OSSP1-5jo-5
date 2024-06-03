@@ -1,27 +1,27 @@
 import React from 'react';
-import SearchBar from './component/SearchBar';
-import NavBar from './component/NavBar';
-import CategoryIcons from './pages/main/CategoryIcons';
-import Banner from './pages/main/Banner';
-import Table from './pages/main/Table';
-import PostBoard from './pages/main/Board';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import NavBar from './component/common/NavBar';
+import SearchBar from './component/common/SearchBar';
+import MainPage from './pages/main/MainPage';
+import './App.css';
 
 const App = () => {
   return (
-    <div>
-      <NavBar/>
-      <SearchBar />
-      <CategoryIcons/>
-      <Banner/>
-      <Table/>
-      <PostBoard/>
-      {/* <CategoryIcons />
-      <ApiShareSection />
-      <OrderTable />
-      <QnASection /> */}
-    </div>
+    <Router>
+      <div className="container">
+         <NavBar/>
+        <div className="search-bar">
+          <SearchBar />
+          <div>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </Router>
   );
 };
 
 export default App;
+

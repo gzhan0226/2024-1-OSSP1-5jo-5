@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { StyledTable, Th, Td, Status } from './style';
+import { StyledTable, Th, Td, Status } from './Style';
 
 const Table = () => {
   const data = [
