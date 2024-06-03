@@ -1,26 +1,27 @@
 import React from 'react';
-import SearchBar from './component/SearchBar';
-import NavBar from './component/NavBar';
-import CategoryIcons from './pages/main/CategoryIcons';
-import Banner from './pages/main/Banner';
-// import CategoryIcons from './components/CategoryIcons';
-// import ApiShareSection from './components/ApiShareSection';
-// import OrderTable from './components/OrderTable';
-// import QnASection from './components/QnASection';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import NavBar from './component/common/NavBar';
+import SearchBar from './component/common/SearchBar';
+import MainPage from './pages/main/MainPage';
+import './App.css';
 
 const App = () => {
   return (
-    <div>
-      <NavBar/>
-      <SearchBar />
-      <CategoryIcons/>
-      <Banner/>
-      {/* <CategoryIcons />
-      <ApiShareSection />
-      <OrderTable />
-      <QnASection /> */}
-    </div>
+    <Router>
+      <div className="container">
+         <NavBar/>
+        <div className="search-bar">
+          <SearchBar />
+          <div>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </Router>
   );
 };
 
 export default App;
+
