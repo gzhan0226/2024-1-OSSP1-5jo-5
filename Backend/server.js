@@ -6,6 +6,8 @@ const connection = require('./Database/db');
 const app = express();
 app.use(bodyParser.json());
 
+const apiRoutes = require("./Routes/apilist");
+app.use("/api", apiRoutes);
 const questionRoutes = require("./Routes/question");
 app.use("/api/question", questionRoutes);
 const questionCommentRoutes = require("./Routes/questionComment");
