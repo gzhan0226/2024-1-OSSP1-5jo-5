@@ -1,5 +1,5 @@
 // allapi.js
-// api 목록 조회 / top10조회
+// api 목록 조회 / top10조회 / api 상세 조회
 
 const express = require("express");
 const router = express.Router();
@@ -47,7 +47,7 @@ const getList = (req, res) => {
             console.error("database query error: ", err);
             return res.status(500).json({ code: 500, message: "database query error" });
         }
-         const promises = results.map(async (api) => {
+        const promises = results.map(async (api) => {
             const faviconUrl = await getFaviconUrl(api.base_url);
             return { ...api, favicon: faviconUrl };
         });
@@ -79,10 +79,16 @@ const getTopList = (req, res) => {
             console.error("database query error: ", err);
             return res.status(500).json({ code: 500, message: "database query error" });
         }
-        res.status(200).json({
-            code: 200,
-            message: "ok",
-            result: results
+        const promises = results.map(async (api) => {
+            const faviconUrl = await getFaviconUrl(api.base_url);
+            return { ...api, favicon: faviconUrl };
+        });
+        Promise.all(promises).then(resultsWithFavicons => {
+            res.status(200).json({
+                code: 200,
+                message: "ok",
+                result: resultsWithFavicons
+            });
         });
     });
 };
@@ -91,26 +97,47 @@ const getDetail = (req, res) => {
     const id = req.query.api_id;
     if (!id)
         return res.status(400).json({ code: 400, message: "api_id is required" });
-
-    const query = `
-        select s.*, 
-        GROUP_CONCAT(DISTINCT CONCAT('Name: ', r.name, ', Type: ', r.type, ', Required: ', r.required, ', Description: ', r.description) SEPARATOR '; ') AS request_details,
-        GROUP_CONCAT(DISTINCT CONCAT('Name: ', p.name, ', Type: ', p.type, ', Description: ', p.description) SEPARATOR '; ') AS response_details
-        from APIspecifics s
-        left join Request r on s.APIspecifics_id = r.endpoint_id
-        left join Respond p on s.APIspecifics_id = p.endpoint_id
-        where s.api_id = ?
-        group by s.APIspecifics_id;
-        `;
-    connection.query(query, id ,(err, results) => {
+    let query = `
+        select a.*,b.base_url 
+        from APIspecifics as a
+        join APIs as b on a.api_id = b.api_id
+        where a.api_id = ?`;
+    connection.query(query, id ,async (err, api_res) => {
         if (err) {
             console.error("database query error: ", err);
             return res.status(500).json({ code: 500, message: "database query error" });
         }
-        res.status(200).json({
-            code: 200,
-            message: "ok",
-            result: results
+        let query = `
+            select *
+            from Request
+            where endpoint_id in (?)`;
+        const baseUrl = api_res.base_url;
+        let faviconUrl = await getFaviconUrl(api_res[0].base_url);
+        const specifics_id = api_res.map(res => res.APIspecifics_id);
+        connection.query(query, [specifics_id] ,(err, request_res) => {
+            if (err) {
+                console.error("database query error: ", err);
+                return res.status(500).json({ code: 500, message: "database query error" });
+            }
+            let query = `
+                select *
+                from Request
+                where endpoint_id in (?)`;
+            connection.query(query, [specifics_id] ,(err, respond_res) => {
+                if (err) {
+                    console.error("database query error: ", err);
+                    return res.status(500).json({ code: 500, message: "database query error" });
+                }
+                
+                res.status(200).json({
+                    code: 200,
+                    message: "ok",
+                    favicon : faviconUrl,
+                    api_specifics: api_res,
+                    request : request_res,
+                    respond : respond_res
+                });
+            });
         });
     });
 };
