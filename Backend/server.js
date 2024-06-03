@@ -6,10 +6,18 @@ const connection = require('./Database/db');
 const app = express();
 app.use(bodyParser.json());
 
+const apiRoutes = require("./Routes/apilist");
+app.use("/api", apiRoutes);
 const questionRoutes = require("./Routes/question");
-app.use("/api", questionRoutes);
+app.use("/api/question", questionRoutes);
+const questionCommentRoutes = require("./Routes/questionComment");
+app.use("/api/question/comment", questionCommentRoutes);
+
 const generalRoutes = require("./Routes/general");
-app.use("/api", generalRoutes);
+app.use("/api/general/", generalRoutes);
+const generalCommentRoutes = require("./Routes/generalComment");
+app.use("/api/general/comment", generalCommentRoutes);
+
 const postsRoutes = require("./Routes/posts");
 app.use("/api/posts", postsRoutes);
 
