@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import NavBar from '../components/NavBar';
-import SearchBar from '../components/SearchBar';
-import Footer from '../components/Footer';
-import './putAPIPage.css';
+import NavBar from '../../components/common/NavBar';
+import SearchBar from '../../components/common/SearchBar';
+import * as S from './postAPIStyle';
 
-function PutAPI() {
+const PostAPI = () => {
   const [apiDetails, setApiDetails] = useState({
     name: '',
     description: '',
@@ -31,7 +30,6 @@ function PutAPI() {
       [name]: type === 'radio' ? (checked ? value : apiDetails[name]) : value 
     });
   };
-  
 
   const handleEndpointChange = (e) => {
     const { name, value } = e.target;
@@ -52,12 +50,12 @@ function PutAPI() {
   };
 
   return (
-    <div className="app-container">
+    <S.AppContainer>
       <NavBar />
-      <div className="main-content-wrapper">
+      <S.MainContentWrapper>
         <SearchBar />
-        <div className="main-content">
-          <div className="form-container">
+        <S.MainContent>
+          <S.FormContainer>
             <h2>API 등록</h2>
             <form>
               <label>
@@ -83,32 +81,33 @@ function PutAPI() {
               </label>
               <label>
                 API 가격 정책:
-                <div className="radio-group">
+                <S.RadioGroup>
                   <label><input type="radio" name="pricing" value="무료" checked={apiDetails.pricing === '무료'} onChange={handleInputChange} /> 무료</label>
                   <label><input type="radio" name="pricing" value="유료" checked={apiDetails.pricing === '유료'} onChange={handleInputChange} /> 유료</label>
-                </div>
+                </S.RadioGroup>
               </label>
               <label>
                 예시코드 제공:
-                <div className="radio-group">
+                <S.RadioGroup>
                   <label><input type="radio" name="codeProvided" value="제공" checked={apiDetails.codeProvided === '제공'} onChange={handleInputChange} /> 제공</label>
                   <label><input type="radio" name="codeProvided" value="미제공" checked={apiDetails.codeProvided === '미제공'} onChange={handleInputChange} /> 미제공</label>
-                </div>
+                </S.RadioGroup>
               </label>
+              <h3>API EndPoint</h3>
               <label>
-                API EndPoint Name:
+                Name:
                 <input type="text" name="name" value={endpoint.name} onChange={handleEndpointChange} />
               </label>
               <label>
-                API Request Parameter:
+                Request Parameter:
                 <input type="text" name="requestParameter" value={endpoint.requestParameter} onChange={handleEndpointChange} />
               </label>
               <label>
-                API Response Parameter:
+                Response Parameter:
                 <input type="text" name="responseParameter" value={endpoint.responseParameter} onChange={handleEndpointChange} />
               </label>
               <label>
-                API Code Example:
+                Code Example:
                 <textarea name="codeExample" value={endpoint.codeExample} onChange={handleEndpointChange}></textarea>
               </label>
               <button type="button" onClick={addEndpoint}>추가</button>
@@ -116,17 +115,17 @@ function PutAPI() {
             <div className="endpoints-list">
               <h3>등록 엔드포인트 목록</h3>
               {apiDetails.endpoints.map((ep, index) => (
-                <div key={index} className="endpoint-item">
+                <S.EndpointItem key={index}>
                   <span>{ep.name}</span>
-                </div>
+                </S.EndpointItem>
               ))}
             </div>
-            <button className="submit-button" type="submit">등록</button>
-          </div>
-        </div>
-      </div>
-    </div>
+            <S.SubmitButton className="submit-button" type="submit">등록</S.SubmitButton>
+          </S.FormContainer>
+        </S.MainContent>
+      </S.MainContentWrapper>
+    </S.AppContainer>
   );
 }
 
-export default PutAPI;
+export default PostAPI;

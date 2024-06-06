@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import NavBar from '../components/NavBar';
-import SearchBar from '../components/SearchBar';
-import Footer from '../components/Footer';
-import './readFreeBoardPage.css';
+import NavBar from '../../components/common/NavBar';
+import SearchBar from '../../components/common/SearchBar';
+import * as S from './readFreeStyle';
 
 function PostView() {
   const post = {
@@ -28,63 +27,61 @@ function PostView() {
   };
 
   return (
-    <div className="app-container">
+    <S.AppContainer>
       <NavBar />
-      <div className="main-content-wrapper">
+      <S.MainContentWrapper>
         <SearchBar />
-        <div className="main-content">
-          <div className="post-container">
-            <div className="post-title-box">
+        <S.MainContent>
+          <S.PostContainer>
+            <S.PostTitleBox>
               <h2>{post.title}</h2>
-            </div>
-            <div className="post-meta-box">
-              <div className="post-meta">
+            </S.PostTitleBox>
+            <S.PostMetaBox>
+              <S.PostMeta>
                 <span>작성자: {post.authorId}</span>
                 <span>작성일: {post.date}</span>
-              </div>
-            </div>
-            <div className="post-content-box">
+              </S.PostMeta>
+            </S.PostMetaBox>
+            <S.PostContentBox>
               <p>{post.content}</p>
-            </div>
+            </S.PostContentBox>
             {userId === post.authorId && (
-              <div className="post-actions">
+              <S.PostActions>
                 <button>수정</button>
                 <button>삭제</button>
-              </div>
+              </S.PostActions>
             )}
-            <div className="comments-section">
-              <div className="comments-header">
+            <S.CommentsSection>
+              <S.CommentsHeader>
                 <h3>댓글</h3>
                 <button onClick={toggleCommentBox}>댓글 쓰기</button>
-              </div>
+              </S.CommentsHeader>
               {showCommentBox && (
-                <div className="comment-box">
-                  <textarea
-                    placeholder="댓글을 입력하세요"
-                  ></textarea>
+                <S.CommentBox>
+                  <textarea placeholder="댓글을 입력하세요"></textarea>
                   <button>등록</button>
-                </div>
+                </S.CommentBox>
               )}
               {comments.map((comment) => (
-                <div key={comment.id} className="comment-item">
-                  <div className="comment-meta">
+                <S.CommentItem key={comment.id}>
+                  <S.CommentMeta>
                     <span>작성자: {comment.authorId}</span>
                     <span>작성일: {comment.date}</span>
-                  </div>
+                  </S.CommentMeta>
                   <p>{comment.content}</p>
                   {userId === comment.authorId && (
-                    <div className="comment-actions">
+                    <S.CommentActions>
                       <button>수정</button>
                       <button>삭제</button>
-                    </div>
+                    </S.CommentActions>
                   )}
-                </div>
+                </S.CommentItem>
               ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </S.CommentsSection>
+          </S.PostContainer>
+        </S.MainContent>
+      </S.MainContentWrapper>
+    </S.AppContainer>
   );
 }
 

@@ -1,10 +1,6 @@
-body, html {
-  height: 100%;
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
+import styled from 'styled-components';
 
-.signup-container {
+export const SignUpContainer = styled.div`
   background: linear-gradient(to right, #5060FF, #8A94FF);
   height: 100vh;
   display: flex;
@@ -12,46 +8,53 @@ body, html {
   justify-content: center;
   align-items: center;
   position: relative;
-}
+`;
 
-.title {
+export const Title = styled.h1`
   color: white;
   font-size: 24px;
   margin-bottom: 20px;
-}
+`;
 
-.form {
+export const Form = styled.div`
   padding: 30px;
   border-radius: 10px;
   width: 320px;
   text-align: center;
-}
+  background: transparent;
+`;
 
-.input-field {
+export const InputGroup = styled.div`
+  margin-bottom: 20px;
+  text-align: left;
+  width: 100%;
+`;
+
+export const InputField = styled.input`
   width: 100%;
   padding: 10px;
   margin: 5px 0;
   border: 1px solid #ddd;
   border-radius: 5px;
   box-sizing: border-box;
-}
+`;
 
-.username-field {
+export const UsernameField = styled.div`
   display: flex;
   align-items: center;
   margin: 5px 0;
   width: 100%;
-}
+`;
 
-.username-input {
+export const UsernameInput = styled.input`
   flex-grow: 1;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
   box-sizing: border-box;
-}
+`;
 
-.check-button {
+export const CheckButton = styled.button`
   padding: 10px;
   background-color: #5060FF;
   color: white;
@@ -60,9 +63,9 @@ body, html {
   cursor: pointer;
   margin-left: 10px;
   box-sizing: border-box;
-}
+`;
 
-.submit-button {
+export const SubmitButton = styled.button`
   width: 100%;
   padding: 10px;
   background-color: #5060FF;
@@ -71,12 +74,11 @@ body, html {
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
-}
+`;
 
-.label {
-  text-align: left;
-  width: 100%;
+export const Label = styled.div`
   color: white;
   font-size: 14px;
   margin: 5px 0 0;
-}
+  text-align: left;
+`;
