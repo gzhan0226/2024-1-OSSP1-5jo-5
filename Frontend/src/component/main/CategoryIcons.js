@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaHeartbeat, FaGamepad, FaMicroscope, FaGraduationCap, FaCar, FaChartLine, FaCloudSun, FaNewspaper, FaHome, FaShoppingCart, FaBasketballBall, FaHamburger, FaBolt, FaPaintBrush, FaTrash, FaMicrochip, FaInstagram, FaLaptopCode, FaEllipsisH,FaVideo } from 'react-icons/fa';
-import { CategoryContainer, CategoryItem, IconLabel, IconBox } from './style';
+import { CategoryContainer, CategoryItem, IconLabel, IconBox } from './Style';
 
 const categories = [
   { icon: <FaHeartbeat />, label: "건강" },
