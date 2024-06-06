@@ -3,10 +3,10 @@ import { FaSearch } from 'react-icons/fa';
 
 //여기서부터는 nav.js 
 export const NavBarContainer = styled.div`
-  width: 15%;
+  width: 16%;
   height: 100vh;
   position: fixed;
-  background-color: pink;
+  background-color: white;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -17,55 +17,83 @@ export const NavBarContainer = styled.div`
 export const Logo = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
+  margin:20px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 18%;
 `;
 
-export const LogoText = styled.span`
-  font-size: 24px;
-  color: #3b49df;
-  font-weight: bold;
-  margin-right: 10px;
+export const TitleDochi = styled.span`
+  font-size: 35px;
+  font-weight: 700;
+  margin-left: 10px;
+  color:#5060FF;
+  white-space : nowrap;
 `;
 
-export const LogoIcon = styled.span`
-  font-size: 24px;
+export const TitleApis = styled.span`
+  font-size: 35px;
+  font-weight: 800;
+  margin-left: 8px;  
+`;
+
+export const LogoIcon = styled.img`
+  margin-left: 10px;
 `;
 
 export const MenuItem = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
   color: #333;
-  font-size: 18px;
+  font-size: 20px;
+  margin-bottom: 20%;
   cursor: pointer;
+  margin-left:20px;
 
   &:hover {
-    color: #3b49df;
+    color: #5060FF;
   }
 
   & > span {
-    margin-left: 10px;
+    margin-left: 20px;
   }
 `;
+export const MenuItemContainer=styled.div`
+margin-bottom: 120%;
+`
 
 export const MenuIcon = styled.div`
-  font-size: 20px;
+  font-size: 23px;
+  color: #3B3B3B;
+  position: relative;
+  top: 3px; 
 `;
 
 export const UserProfile = styled.div`
-  margin-top: auto;
+  
   display: flex;
   align-items: center;
+  width:85%;
+  height:5%;
+  padding:5%;
+  border-radius: 60px 60px 60px 60px;
+  border: 1px solid black;
 `;
 
 export const UserName = styled.div`
   font-size: 16px;
   font-weight: bold;
+  margin-left: 20%;
+  white-space : nowrap;
 `;
 
 export const UserStatus = styled.div`
   font-size: 14px;
   color: #666;
+  margin-left: 20%;
+  margin-top: 5%;
+  white-space : nowrap;
+
 `;
 
 
