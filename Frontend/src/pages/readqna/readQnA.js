@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import NavBar from '../components/NavBar';
-import SearchBar from '../components/SearchBar';
-import Footer from '../components/Footer';
-import './readQnABoardPage.css';
+import NavBar from '../../components/common/NavBar';
+import SearchBar from '../../components/common/SearchBar';
+import * as S from './readQnAStyle';
 
 function PostViewQnA() {
   const post = {
@@ -13,7 +12,7 @@ function PostViewQnA() {
     content: '이것은 예시 질문의 내용입니다. 질문 내용을 자세히 적어주세요.',
   };
 
-  const userId = 'author123'; // 예시로 현재 사용자 ID를 작성자 ID로 설정합니다.
+  const userId = 'author123';
   const [showAnswerBox, setShowAnswerBox] = useState(false);
   const [answers, setAnswers] = useState([
     {
@@ -29,63 +28,61 @@ function PostViewQnA() {
   };
 
   return (
-    <div className="app-container">
+    <S.AppContainer>
       <NavBar />
-      <div className="main-content-wrapper">
+      <S.MainContentWrapper>
         <SearchBar />
-        <div className="main-content">
-          <div className="post-container">
-            <div className="post-title-box">
+        <S.MainContent>
+          <S.PostContainer>
+            <S.PostTitleBox>
               <h2>{post.apiName} - {post.title}</h2>
-            </div>
-            <div className="post-meta-box">
-              <div className="post-meta">
+            </S.PostTitleBox>
+            <S.PostMetaBox>
+              <S.PostMeta>
                 <span>작성자: {post.authorId}</span>
                 <span>작성일: {post.date}</span>
-              </div>
-            </div>
-            <div className="post-content-box">
+              </S.PostMeta>
+            </S.PostMetaBox>
+            <S.PostContentBox>
               <p>{post.content}</p>
-            </div>
+            </S.PostContentBox>
             {userId === post.authorId && (
-              <div className="post-actions">
+              <S.PostActions>
                 <button>수정</button>
                 <button>삭제</button>
-              </div>
+              </S.PostActions>
             )}
-            <div className="answers-section">
-              <div className="answers-header">
+            <S.AnswersSection>
+              <S.AnswersHeader>
                 <h3>답변</h3>
                 <button onClick={toggleAnswerBox}>답변 쓰기</button>
-              </div>
+              </S.AnswersHeader>
               {showAnswerBox && (
-                <div className="answer-box">
-                  <textarea
-                    placeholder="답변을 입력하세요"
-                  ></textarea>
+                <S.AnswerBox>
+                  <textarea placeholder="답변을 입력하세요"></textarea>
                   <button>등록</button>
-                </div>
+                </S.AnswerBox>
               )}
               {answers.map((answer) => (
-                <div key={answer.id} className="answer-item">
-                  <div className="answer-meta">
+                <S.AnswerItem key={answer.id}>
+                  <S.AnswerMeta>
                     <span>작성자: {answer.authorId}</span>
                     <span>작성일: {answer.date}</span>
-                  </div>
+                  </S.AnswerMeta>
                   <p>{answer.content}</p>
                   {userId === post.authorId && (
-                    <div className="answer-actions">
+                    <S.AnswerActions>
                       <button>재답변</button>
                       <button>채택</button>
-                    </div>
+                    </S.AnswerActions>
                   )}
-                </div>
+                </S.AnswerItem>
               ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </S.AnswersSection>
+          </S.PostContainer>
+        </S.MainContent>
+      </S.MainContentWrapper>
+    </S.AppContainer>
   );
 }
 
