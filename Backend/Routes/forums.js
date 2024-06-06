@@ -1,11 +1,11 @@
-// posts.js
+// forums.js
 // 게시판 목록 조회 / top10조회
 
 const express = require("express");
 const router = express.Router();
 const connection = require('../Database/db');
 
-const getPosts = (req, res) => {
+const getForums = (req, res) => {
     const { type, page = 1, user_id, api_id } = req.query;
     const pageSize = 10;
     const offset = page ? (page - 1) * pageSize : 0;
@@ -50,7 +50,7 @@ const getPosts = (req, res) => {
     })
 }
 
-const getTopPosts = (req, res) => {
+const getTopForums = (req, res) => {
     const type = req.query.type;
     if (!type)
         return res.status(400).json({ code: 400, message: "type is required" });
@@ -77,7 +77,7 @@ const getTopPosts = (req, res) => {
     });
 };
 
-router.get("/", getPosts);
-router.get("/top", getTopPosts);
+router.get("/", getForums);
+router.get("/top", getTopForums);
 
 module.exports = router;

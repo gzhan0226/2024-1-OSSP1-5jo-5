@@ -65,12 +65,12 @@ const getQuestionDetails = (req, res) => {
       }
       if (results.length === 0)
         return res.status(404).json({ code: 404, message: "question not found" });
-      const post = results[0];
+      const forum = results[0];
   
       res.status(200).json({
         code: 200,
         message: "ok",
-        result: post
+        result: forum
       });
     });
   });
