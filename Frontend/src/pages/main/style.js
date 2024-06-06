@@ -19,3 +19,8 @@ export const PostBoardWrapper = styled.div`
 display: flex;
 justify-content:center;
 `;
+
+export const TableWrapper = styled.div`
+display: flex;
+background-color: green;
+`;

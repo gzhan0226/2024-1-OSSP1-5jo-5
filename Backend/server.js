@@ -1,10 +1,12 @@
 // server.js
+var cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('./Database/db');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 const apiRoutes = require("./Routes/apilist");
 app.use("/api", apiRoutes);
@@ -22,7 +24,7 @@ const postsRoutes = require("./Routes/posts");
 app.use("/api/posts", postsRoutes);
 
 // 서버 시작
-const port = 3000;
+const port = 8080;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

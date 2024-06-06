@@ -141,7 +141,7 @@ export const Header = styled.div`
 //Table에 있는 css
 
 export const StyledTable = styled.table`
-  width: 100%;
+  width: 30%;
   border-collapse: collapse;
   background-color: #f3f4f6;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

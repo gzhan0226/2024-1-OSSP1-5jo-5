@@ -10,12 +10,16 @@ const MainPage = () => {
     <S.MainWrapper>
       <CategoryIcons/>
       <S.BannerWrapper>
-      <Banner/>
+        <Banner/>
       </S.BannerWrapper>
+      <S.TableWrapper>
+        <Table/>
+        <Table/>
+      </S.TableWrapper>
       <S.PostBoardWrapper>
         <PostBoard/><PostBoard/>
       </S.PostBoardWrapper>
-      <Table/>
+      
     </S.MainWrapper>
   );
 };
