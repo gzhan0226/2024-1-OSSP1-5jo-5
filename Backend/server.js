@@ -20,8 +20,8 @@ app.use("/api/general/", generalRoutes);
 const generalCommentRoutes = require("./Routes/generalComment");
 app.use("/api/general/comment", generalCommentRoutes);
 
-const postsRoutes = require("./Routes/posts");
-app.use("/api/posts", postsRoutes);
+const forumsRoutes = require("./Routes/forums");
+app.use("/api/forums", forumsRoutes);
 
 // 서버 시작
 const port = 8080;

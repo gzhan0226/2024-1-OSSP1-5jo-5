@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const util = require('util');
 
 require('dotenv').config();
 const connection = mysql.createConnection({
@@ -15,4 +16,8 @@ connection.connect(err => {
   }
   console.log('MySQL connected...');
 });
+
+// 쿼리 함수 프로미스화
+connection.query = util.promisify(connection.query);
+
 module.exports = connection;
