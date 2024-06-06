@@ -12,7 +12,7 @@ const App = () => {
          <NavBar/>
         <div className="search-bar">
           <SearchBar />
-          <div>
+          <div> 
             <Routes>
               <Route path="/" element={<MainPage />} />
             </Routes>
