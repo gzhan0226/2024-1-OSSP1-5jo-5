@@ -73,7 +73,7 @@ const getTopList = (req, res) => {
     const query = `
         select * from APIs
         order by ${show} desc
-        limit 10`;
+        limit 5`;
     connection.query(query, (err, results) => {
         if (err) {
             console.error("database query error: ", err);
