@@ -9,7 +9,10 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const apiRoutes = require("./Routes/apilist");
-app.use("/api", apiRoutes);
+app.use("/api/list", apiRoutes);
+const apiDataRoutes = require("./Routes/apiData");
+app.use("/api/data", apiDataRoutes);
+
 const questionRoutes = require("./Routes/question");
 app.use("/api/question", questionRoutes);
 const questionCommentRoutes = require("./Routes/questionComment");
