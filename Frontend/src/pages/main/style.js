@@ -22,5 +22,9 @@ justify-content:center;
 
 export const TableWrapper = styled.div`
 display: flex;
-background-color: green;
+margin-left: auto;
+margin-right: auto;
+width:86%;
+justify-content: space-between;
+margin-top:4%;
 `;
