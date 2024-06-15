@@ -8,9 +8,9 @@ export const CardContainer = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   max-width: 300px;
   position: relative;
-  background-color: violet;
-  width: 250px;
-  height: 250px;
+  background-color: white;
+  /* width: 70%;
+  height: 50%; */
 `;
 
 export const CardIcon = styled.div`

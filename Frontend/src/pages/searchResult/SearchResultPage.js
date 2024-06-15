@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import ApiCard from "../../component/searchResult/ApiCard";
 import DetailResult from "../../pages/searchResult/DetailResult";
 import * as S from "./Style";
+import SearchBar from "../../component/common/SearchBar";
+import DetailedView from "../../pages/searchResult/DetailResult";
 
 const SearchResultPage = () => {
   const [selectedApi, setSelectedApi] = useState(null);
@@ -12,10 +14,10 @@ const SearchResultPage = () => {
       views: 2800,
       title: "Twitter API",
       description:
-        "Twitter의 게시물, 인기 검색어 등 핵심 요소를 활용할 수 있는 API",
+        "Twitter의 게시물, 인기 검색어 등 핵심 요소를 활용할 수 있는 API글자수세기자수세기자수세기자수세기자수세기자수세기자수세기",
     },
     {
-      icon: "/img/instagram.png",
+      icon: "/img/dochi.png",
       views: 2231,
       title: "Instagram API",
       description:
@@ -76,23 +78,33 @@ const SearchResultPage = () => {
   };
 
   return (
-    <S.SearchResultPageContainer>
-      {selectedApi && (
-        <DetailResult api={selectedApi} onClose={handleCloseDetailView} />
-      )}
-      <S.CardGrid>
-        {apiData.map((api, index) => (
-          <S.CardGridItem key={index} onClick={() => handleApiClick(api)}>
-            <ApiCard
-              icon={api.icon}
-              views={api.views}
-              title={api.title}
-              description={api.description}
-            />
-          </S.CardGridItem>
-        ))}
-      </S.CardGrid>
-    </S.SearchResultPageContainer>
+    <>
+      <S.DisplayRow>
+        <S.PageContainer>
+          <SearchBar isDetailActive={selectedApi !== null} />
+          {/* <S.SearchResultPageContainer>/ */}
+          <p style={{ fontSize: "20px", marginLeft: "10%" }}>
+            전체 API를 검색한 결과
+          </p>
+          <S.CardGrid>
+            {apiData.map((api, index) => (
+              <S.CardGridItem key={index} onClick={() => handleApiClick(api)}>
+                <ApiCard
+                  icon={api.icon}
+                  views={api.views}
+                  title={api.title}
+                  description={api.description}
+                />
+              </S.CardGridItem>
+            ))}
+          </S.CardGrid>
+          {/* </S.SearchResultPageContainer> */}
+        </S.PageContainer>
+        {selectedApi && (
+          <DetailedView api={selectedApi} onClose={handleCloseDetailView} />
+        )}
+      </S.DisplayRow>
+    </>
   );
 };
 
