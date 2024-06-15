@@ -13,22 +13,21 @@ const App = () => {
       <div className="container">
         <NavBar />
         <div className="search-bar">
-          <SearchBar />
+          {/* <SearchBar /> */}
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/result" element={<SearchResultPage />} />
-
+            <Route path="/allresult" element={<SearchResultPage />} />
             {/* <Route
-              path="/api-card"
-              element={
-                <ApiCard
-                  icon="/img/dochi.png"
-                  views={56}
-                  title="KaKaoStory API"
-                  description="카카오스토리의 게시물을 공유하고, 관리할 수 있는 API"
-                />
-              }
-            /> */}
+                path="/api-card"
+                element={
+                  <ApiCard
+                    icon="/img/dochi.png"
+                    views={56}
+                    title="KaKaoStory API"
+                    description="카카오스토리의 게시물을 공유하고, 관리할 수 있는 API"
+                  />
+                }
+              /> */}
           </Routes>
         </div>
       </div>
