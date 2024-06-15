@@ -12,7 +12,7 @@ import { FaSearch } from "react-icons/fa";
 
 const SearchBar = ({ isDetailActive }) => {
   return (
-    <SearchBarContainer style={{ width: isDetailActive ? "62vw" : "82vw" }}>
+    <SearchBarContainer style={{ width: isDetailActive ? "60vw" : "82vw" }}>
       <Bar>
         <SearchInput
           type="text"

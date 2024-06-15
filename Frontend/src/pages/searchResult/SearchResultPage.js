@@ -1,73 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ApiCard from "../../component/searchResult/ApiCard";
-import DetailResult from "../../pages/searchResult/DetailResult";
+import DetailedView from "../../pages/searchResult/DetailResult";
 import * as S from "./Style";
 import SearchBar from "../../component/common/SearchBar";
-import DetailedView from "../../pages/searchResult/DetailResult";
 
 const SearchResultPage = () => {
   const [selectedApi, setSelectedApi] = useState(null);
+  const [apiData, setApiData] = useState([]); // 초기 상태를 빈 배열로 설정
 
-  const apiData = [
-    {
-      icon: "/img/dochi.png",
-      views: 2800,
-      title: "Twitter API",
-      description:
-        "Twitter의 게시물, 인기 검색어 등 핵심 요소를 활용할 수 있는 API글자수세기자수세기자수세기자수세기자수세기자수세기자수세기",
-    },
-    {
-      icon: "/img/dochi.png",
-      views: 2231,
-      title: "Instagram API",
-      description:
-        "Instagram의 사진, 비디오 및 프로필 데이터에 접근할 수 있는 API",
-    },
-    {
-      icon: "/img/tiktok.png",
-      views: 2012,
-      title: "Tiktok API",
-      description:
-        "TikTok의 동영상 콘텐츠와 사용자 인터랙션을 활용할 수 있는 API",
-    },
-    {
-      icon: "/img/youtube.png",
-      views: 1800,
-      title: "Youtube API",
-      description:
-        "YouTube의 동영상, 채널, 댓글 등의 데이터를 관리할 수 있는 API",
-    },
-    {
-      icon: "/img/kakaotalk.png",
-      views: 1780,
-      title: "KakaoTalk API",
-      description: "카카오톡 메시지를 보내고, 채팅방 관리 등을 할 수 있는 API",
-    },
-    {
-      icon: "/img/naverblog.png",
-      views: 900,
-      title: "NaverBlog API",
-      description: "네이버 블로그의 글을 작성하고, 관리할 수 있는 API",
-    },
-    {
-      icon: "/img/slack.png",
-      views: 632,
-      title: "Slack API",
-      description: "Slack의 메시지 전송, 채널 관리 등의 기능을 제공하는 API",
-    },
-    {
-      icon: "/img/snapchat.png",
-      views: 629,
-      title: "Snapchat API",
-      description: "Snapchat의 스토리, 광고 등을 생성하고 관리할 수 있는 API",
-    },
-    {
-      icon: "/img/kakaostory.png",
-      views: 56,
-      title: "KaKaoStory API",
-      description: "카카오스토리의 게시물을 공유하고, 관리할 수 있는 API",
-    },
-  ];
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 API 데이터를 불러옵니다.
+    fetch("http://localhost:8080/api/list")
+      .then((response) => response.json())
+      .then((data) => {
+        setApiData(data.result); // API에서 받은 데이터로 상태를 업데이트
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+        setApiData([]); // 에러 발생 시 상태를 빈 배열로 설정
+      });
+  }, []); // 의존성 배열을 빈 배열로 설정하여 컴포넌트 마운트 시에만 실행
 
   const handleApiClick = (api) => {
     setSelectedApi(api);
@@ -82,7 +34,6 @@ const SearchResultPage = () => {
       <S.DisplayRow>
         <S.PageContainer>
           <SearchBar isDetailActive={selectedApi !== null} />
-          {/* <S.SearchResultPageContainer>/ */}
           <p style={{ fontSize: "20px", marginLeft: "10%" }}>
             전체 API를 검색한 결과
           </p>
@@ -90,15 +41,14 @@ const SearchResultPage = () => {
             {apiData.map((api, index) => (
               <S.CardGridItem key={index} onClick={() => handleApiClick(api)}>
                 <ApiCard
-                  icon={api.icon}
-                  views={api.views}
-                  title={api.title}
+                  icon={api.favicon || "/img/default_api.png"}
+                  views={api.view}
+                  title={api.name}
                   description={api.description}
                 />
               </S.CardGridItem>
             ))}
           </S.CardGrid>
-          {/* </S.SearchResultPageContainer> */}
         </S.PageContainer>
         {selectedApi && (
           <DetailedView api={selectedApi} onClose={handleCloseDetailView} />
