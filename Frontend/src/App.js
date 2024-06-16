@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./component/common/NavBar";
-import SearchBar from "./component/common/SearchBar";
 import MainPage from "./pages/main/MainPage";
 import "./App.css";
-import ApiCard from "./component/searchResult/ApiCard"; // Correct import
 import SearchResultPage from "./pages/searchResult/SearchResultPage";
+import ApiDetailPage from "./pages/apidetail/ApiDetailPage";
+import SignUp from "./pages/signup/signup";
 
 const App = () => {
   return (
@@ -13,21 +13,11 @@ const App = () => {
       <div className="container">
         <NavBar />
         <div className="search-bar">
-          {/* <SearchBar /> */}
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/allresult" element={<SearchResultPage />} />
-            {/* <Route
-                path="/api-card"
-                element={
-                  <ApiCard
-                    icon="/img/dochi.png"
-                    views={56}
-                    title="KaKaoStory API"
-                    description="카카오스토리의 게시물을 공유하고, 관리할 수 있는 API"
-                  />
-                }
-              /> */}
+            <Route path="/api-details/:id" element={<ApiDetailPage />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </div>
       </div>
