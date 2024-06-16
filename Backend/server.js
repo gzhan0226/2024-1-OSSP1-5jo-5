@@ -34,7 +34,10 @@ app.use("/login", loginRoutes);
 const userRoutes = require("./Routes/users");
 app.use("/users", userRoutes);
 const apiRoutes = require("./Routes/apilist");
-app.use("/api", apiRoutes);
+app.use("/api/list", apiRoutes);
+const apiDataRoutes = require("./Routes/apiData");
+app.use("/api/data", apiDataRoutes);
+
 const questionRoutes = require("./Routes/question");
 app.use("/api/question", questionRoutes);
 const questionCommentRoutes = require("./Routes/questionComment");
@@ -45,8 +48,8 @@ app.use("/api/general/", generalRoutes);
 const generalCommentRoutes = require("./Routes/generalComment");
 app.use("/api/general/comment", generalCommentRoutes);
 
-const postsRoutes = require("./Routes/posts");
-app.use("/api/posts", postsRoutes);
+const forumsRoutes = require("./Routes/forums");
+app.use("/api/forums", forumsRoutes);
 
 // 서버 시작
 const port = 8080;
