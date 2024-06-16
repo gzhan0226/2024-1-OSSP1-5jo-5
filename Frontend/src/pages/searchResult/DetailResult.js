@@ -1,15 +1,8 @@
 import React from "react";
 import * as S from "./Style";
-import { useNavigate } from "react-router-dom";
 
 const DetailedView = ({ api, onClose }) => {
-  const navigate = useNavigate();
-
   if (!api) return null;
-
-  const handleLinkClick = () => {
-    navigate(`/api-details/${api.api_id}`);
-  };
 
   return (
     <S.DetailedViewContainer>
@@ -23,7 +16,7 @@ const DetailedView = ({ api, onClose }) => {
       <S.SubTitle>About the API</S.SubTitle>
 
       <p style={{ lineHeight: "1.5" }}>{api.description}</p>
-      <S.LinkButton onClick={handleLinkClick}>자세히 보기</S.LinkButton>
+      <S.LinkButton>자세히 보기</S.LinkButton>
     </S.DetailedViewContainer>
   );
 };
