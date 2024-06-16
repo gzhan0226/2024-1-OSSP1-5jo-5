@@ -1,96 +1,134 @@
 // apilist.js
 // api 목록 조회 / top10조회
+const Categories = {
+  1: "건강",
+  2: "게임",
+  3: "과학",
+  4: "교육",
+  5: "교통",
+  6: "금융",
+  7: "날씨",
+  8: "뉴스_미디어",
+  9: "부동산",
+  10: "비디오_이미지",
+  11: "쇼핑",
+  12: "스포츠",
+  13: "식음료",
+  14: "에너지",
+  15: "예술",
+  16: "여행",
+  17: "AI",
+  18: "SNS",
+  19: "IT",
+  20: "기타",
+};
 
 const express = require("express");
 const router = express.Router();
-const connection = require('../Database/db');
-const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const connection = require("../Database/db");
+const fetch = require("node-fetch");
+const cheerio = require("cheerio");
 
 const getFaviconUrl = async (baseUrl) => {
   try {
     const response = await fetch(baseUrl);
     const html = await response.text();
     const $ = cheerio.load(html);
-    const faviconLink = $("link[rel='shortcut icon'], link[rel='icon']").attr('href');
+    const faviconLink = $("link[rel='shortcut icon'], link[rel='icon']").attr(
+      "href"
+    );
     if (!faviconLink) {
       return null;
     }
     return new URL(faviconLink, baseUrl).href;
   } catch (e) {
-    console.error('Error fetching favicon:', e);
+    console.error("Error fetching favicon:", e);
     return null;
   }
-}
+};
 
-const getList = (req, res) => {
-    const { category, user_id } = req.query;
-    
-    let conditions = [];
-    let queryParams = [];
-    if (category) {
-        conditions.push("category = ?")
-        queryParams.push(category);
-    }
-    if (user_id) {
-        conditions.push("user_id = ?");
-        queryParams.push(user_id);
-    }
+const getList = async (req, res) => {
+  const { categoryId, page = 1, sort = "newest" } = req.query;
+  const pageSize = 10;
+  const offset = page ? (page - 1) * pageSize : 0;
 
-    let query = `select * from APIs`;
-    if (conditions.length > 0) {
-        query += ` where ${conditions.join(" and ")}`;
-    }
-    query += ` order by api_id desc`;
-    connection.query(query, queryParams, (err, results) => {
-        if (err) {
-            console.error("database query error: ", err);
-            return res.status(500).json({ code: 500, message: "database query error" });
-        }
-        const promises = results.map(async (api) => {
-            const faviconUrl = await getFaviconUrl(api.base_url);
-            return { ...api, favicon: faviconUrl };
-        });
-        Promise.all(promises).then(resultsWithFavicons => {
-            res.status(200).json({
-                code: 200,
-                message: "ok",
-                result: resultsWithFavicons
-            });
-        });
-    })
-}
+  let conditions = [];
+  let queryParams = [];
+  if (categoryId) {
+    conditions.push("category = ?");
+    queryParams.push(Categories[categoryId]);
+  }
+  let countQuery = `select count(*) as total from APIs`;
+  let query = `select * from APIs`;
+  if (conditions.length > 0) {
+    countQuery += ` where ${conditions.join(" and ")}`;
+    query += ` where ${conditions.join(" and ")}`;
+  }
+
+  if (sort == "views") query += ` order by view desc, api_id desc`;
+  else if (sort == "likes") query += ` order by likes desc, api_id desc`;
+  else query += ` order by api_id desc`;
+
+  query += ` limit ? offset ?`;
+  queryParams.push(pageSize, offset);
+
+  try {
+    const [count] = await connection.query(countQuery, queryParams);
+    const totalItems = count.total;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const results = await connection.query(query, queryParams);
+    const promises = results.map(async (api) => {
+      const faviconUrl = await getFaviconUrl(api.base_url);
+      return { ...api, favicon: faviconUrl };
+    });
+
+    const resultsWithFavicons = await Promise.all(promises);
+
+    res.status(200).json({
+      code: 200,
+      message: "ok",
+      totalItems: totalItems,
+      totalPages: totalPages,
+      result: resultsWithFavicons,
+    });
+  } catch (error) {
+    console.error("database query error: ", error);
+    return res.status(500).json({ code: 500, message: "database query error" });
+  }
+};
 
 const getTopList = (req, res) => {
-    const type = req.query.type;
-    let show;
-    if (!type)
-        return res.status(400).json({ code: 400, message: "type is required" });
-    if (type === "views") show="view"
-    else if (type === "likes") show="likes"
-    else return res.status(400).json({ code: 400, message: "Invalid type" });
+  const type = req.query.type;
+  let show;
+  if (!type)
+    return res.status(400).json({ code: 400, message: "type is required" });
+  if (type === "views") show = "view";
+  else if (type === "likes") show = "likes";
+  else return res.status(400).json({ code: 400, message: "Invalid type" });
 
-    const query = `
+  const query = `
         select * from APIs
         order by ${show} desc
         limit 5`;
-    connection.query(query, (err, results) => {
-        if (err) {
-            console.error("database query error: ", err);
-            return res.status(500).json({ code: 500, message: "database query error" });
-        }
-        const promises = results.map(async (api) => {
-            const faviconUrl = await getFaviconUrl(api.base_url);
-            return { ...api, favicon: faviconUrl };
-        });
-        Promise.all(promises).then(resultsWithFavicons => {
-            res.status(200).json({
-                code: 200,
-                message: "ok",
-                result: resultsWithFavicons
-            });
-        });
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error("database query error: ", err);
+      return res
+        .status(500)
+        .json({ code: 500, message: "database query error" });
+    }
+    const promises = results.map(async (api) => {
+      const faviconUrl = await getFaviconUrl(api.base_url);
+      return { ...api, favicon: faviconUrl };
     });
+    Promise.all(promises).then((resultsWithFavicons) => {
+      res.status(200).json({
+        code: 200,
+        message: "ok",
+        result: resultsWithFavicons,
+      });
+    });
+  });
 };
 
 router.get("/", getList);
