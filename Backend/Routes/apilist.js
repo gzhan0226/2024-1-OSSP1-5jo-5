@@ -49,7 +49,7 @@ const getFaviconUrl = async (baseUrl) => {
 
 const getList = async (req, res) => {
   const { categoryId, page = 1, sort = "newest" } = req.query;
-  const pageSize = 10;
+  const pageSize = 9;
   const offset = page ? (page - 1) * pageSize : 0;
 
   let conditions = [];
@@ -131,7 +131,52 @@ const getTopList = (req, res) => {
   });
 };
 
+const search = async (req, res) => {
+  const word = req.body.search;
+  const { page = 1 } = req.query;
+  const pageSize = 9;
+  const offset = page ? (page - 1) * pageSize : 0;
+
+  if (!word)
+    return res
+      .status(400)
+      .json({ code: 400, message: "word query is required" });
+
+  const terms = word.split(/\s+/).filter((term) => term.length > 0);
+  const conditions = terms
+    .map(() => `(name like ? or description like ? or category like ?)`)
+    .join(` and `);
+
+  const countQuery = `select count(*) as total from APIs where ${conditions}`;
+  const searchQuery = `
+    select * from APIs
+    where ${conditions}
+    order by likes desc, api_id desc
+    limit ? offset ?`;
+
+  try {
+    const queryParams = terms.flatMap((term) => Array(3).fill(`%${term}%`));
+    const totalResults = await connection.query(countQuery, queryParams);
+    const totalItems = totalResults[0].total;
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    queryParams.push(pageSize, offset);
+    const results = await connection.query(searchQuery, queryParams);
+    res.status(200).json({
+      code: 200,
+      message: "ok",
+      totalItems: totalItems,
+      totalPages: totalPages,
+      results: results,
+    });
+  } catch (error) {
+    console.error("database query error: ", error);
+    res.status(500).json({ code: 500, message: "database query error" });
+  }
+};
+
 router.get("/", getList);
 router.get("/top", getTopList);
+router.get("/search", search);
 
 module.exports = router;
