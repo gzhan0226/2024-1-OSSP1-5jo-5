@@ -1,30 +1,68 @@
-import React from 'react';
-import { NavBarContainer, MenuItem, MenuIcon, UserProfile, UserName, UserStatus, Logo, LogoText, LogoIcon,TitleDochi,TitleApis,MenuItemContainer } from './Style';
-import { FaHome, FaSearch, FaQuestionCircle, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
+import React from "react";
+import {
+  NavBarContainer,
+  MenuItem,
+  MenuIcon,
+  UserProfile,
+  UserName,
+  UserStatus,
+  Logo,
+  LogoText,
+  LogoIcon,
+  TitleDochi,
+  TitleApis,
+  MenuItemContainer,
+} from "./Style";
+import {
+  FaHome,
+  FaSearch,
+  FaQuestionCircle,
+  FaInfoCircle,
+  FaUserCircle,
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
+  const navigate = useNavigate();
+
+  const homeClick = () => {
+    navigate("/");
+  };
+
+  const resultClick = () => {
+    navigate("/allresult");
+  };
+
   return (
     <NavBarContainer>
       <Logo>
         <TitleDochi>도치</TitleDochi>
         <TitleApis>APIS</TitleApis>
-        <LogoIcon src="/img/dochi.png" alt="Dochi"/>
+        <LogoIcon src="/img/dochi.png" alt="Dochi" />
       </Logo>
       <MenuItemContainer>
-        <MenuItem>
-          <MenuIcon><FaHome /></MenuIcon>
+        <MenuItem onClick={homeClick} style={{ cursor: "pointer" }}>
+          <MenuIcon>
+            <FaHome />
+          </MenuIcon>
           <span>Home</span>
         </MenuItem>
-        <MenuItem>
-          <MenuIcon><FaSearch /></MenuIcon>
+        <MenuItem onClick={resultClick} style={{ cursor: "pointer" }}>
+          <MenuIcon>
+            <FaSearch />
+          </MenuIcon>
           <span>API 전체 조회</span>
         </MenuItem>
         <MenuItem>
-          <MenuIcon><FaQuestionCircle /></MenuIcon>
+          <MenuIcon>
+            <FaQuestionCircle />
+          </MenuIcon>
           <span>Q&A</span>
         </MenuItem>
         <MenuItem>
-          <MenuIcon><FaInfoCircle /></MenuIcon>
+          <MenuIcon>
+            <FaInfoCircle />
+          </MenuIcon>
           <span>사이트 소개</span>
         </MenuItem>
       </MenuItemContainer>

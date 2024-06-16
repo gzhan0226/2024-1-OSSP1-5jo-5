@@ -4,11 +4,35 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const connection = require("./Database/db");
 
+const session = require("express-session");
+const passport = require("passport");
+const passportConfig = require("./passport");
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// API
+passportConfig(); // 패스포트 설정
+
+app.use(
+  // express-session으로 세션 정의
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.SECRET,
+    cookie: {
+      secure: false,
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+const loginRoutes = require("./Routes/login");
+app.use("/login", loginRoutes);
+const userRoutes = require("./Routes/users");
+app.use("/users", userRoutes);
 const apiRoutes = require("./Routes/apilist");
 app.use("/api/list", apiRoutes);
 const apiDataRoutes = require("./Routes/apiData");

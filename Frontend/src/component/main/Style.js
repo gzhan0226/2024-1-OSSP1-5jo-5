@@ -103,6 +103,14 @@ export const BannerButton = styled.button`
 
 
 //Board에 있는 것
+
+export const BoardContainer=styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: pink;
+  width:46%;
+`;
+
 export const Board = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr); // 2열
@@ -112,7 +120,7 @@ export const Board = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   background-color: white;
-  
+  width: 98%;
 `;
 
 export const Card = styled.div`
@@ -136,17 +144,22 @@ export const Header = styled.div`
   padding: 15px; // 패딩
   border-radius: 8px 8px 0 0; // 상단 모서리 둥글게
   margin-bottom: -8px; // 카드와의 공간 제거
+  z-index: 100;
+  width: 100%;
 `;
 
 //Table에 있는 css
 
 export const StyledTable = styled.table`
-  width: 30%;
+  width: 47%;
   border-collapse: collapse;
   background-color: #f3f4f6;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
+  border:1px solid gray;
+  font-size: 15px;
+  white-space: nowrap;
 `;
 
 export const Th = styled.th`
@@ -160,6 +173,16 @@ export const Td = styled.td`
   padding: 12px 15px;
   border-bottom: 1px solid #dddddd;
   text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const TdFavi = styled.img`
+  padding: 12px 15px;
+  text-align: center;
+  width:40px;
+  height:40px;
+  border-radius:20px;
 `;
 
 export const Status = styled.span`
@@ -184,7 +207,3 @@ export const Status = styled.span`
 `;
 
 
-export const BoardContainer=styled.div`
-  display: flex;
-  
-`;
