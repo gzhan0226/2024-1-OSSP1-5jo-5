@@ -11,12 +11,17 @@ const MyPage = () => {
   const [likedApis, setLikedApis] = useState([]);
   const [enrollApis, setEnrollApis] = useState([]);
   const [questions, setQuestions] = useState([]);
+  const [general, setGeneral] = useState([]);
+
   const [error, setError] = useState(null);
 
   const likeEndpoint = "http://localhost:8080/api/like/list?user_id=1";
   const enrollEndpoint = "http://localhost:8080/api/list?user_id=1";
   const questionEndpoint =
     "http://localhost:8080/api/forums?type=question&user_id=1";
+
+  const generalEndpoint =
+    "http://localhost:8080/api/forums?type=general&user_id=1";
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,7 +38,7 @@ const MyPage = () => {
     const fetchLikedApis = async () => {
       try {
         const response = await axios.get(likeEndpoint);
-        setLikedApis(response.data.result.slice(0, 4)); // Get only first 4 items
+        setLikedApis(response.data.result.slice(0, 4));
       } catch (err) {
         setError("An error occurred while fetching liked APIs");
       }
@@ -48,6 +53,15 @@ const MyPage = () => {
       }
     };
 
+    const fetchGeneral = async () => {
+      try {
+        const response = await axios.get(generalEndpoint);
+        setGeneral(response.data.result.slice(0, 4));
+      } catch (err) {
+        setError("An error occurred while fetching general");
+      }
+    };
+
     const fetchQuestions = async () => {
       try {
         const response = await axios.get(questionEndpoint);
@@ -57,6 +71,7 @@ const MyPage = () => {
       }
     };
 
+    fetchGeneral();
     fetchUserData();
     fetchLikedApis();
     fetchEnrollApis();
@@ -79,6 +94,14 @@ const MyPage = () => {
 
   const handleCardClick = (id) => {
     navigate(`/api-details/${id}`);
+  };
+
+  const handleFreeClick = (id) => {
+    navigate(`/readFree/${id}`);
+  };
+
+  const handleQnAClick = (id) => {
+    navigate(`/readQnA/${id}`);
   };
 
   //말줄임표
@@ -141,12 +164,15 @@ const MyPage = () => {
             <S.Title>내가 쓴 글</S.Title>
             <S.More>더보기 &gt;</S.More>
           </S.ForumHeader>
-          {questions.map((question, index) => (
-            <S.QuestionItem key={index}>
-              <S.QuestionTitle>{truncate(question.title, 10)}</S.QuestionTitle>
+          {general.map((general, index) => (
+            <S.QuestionItem
+              key={index}
+              onClick={() => handleFreeClick(general.id)}
+            >
+              <S.QuestionTitle>{truncate(general.title, 10)}</S.QuestionTitle>
 
               <S.QuestionDate>
-                {new Date(question.creation_date).toLocaleDateString()}
+                {new Date(general.creation_date).toLocaleDateString()}
               </S.QuestionDate>
             </S.QuestionItem>
           ))}
@@ -158,7 +184,10 @@ const MyPage = () => {
             <S.More>더보기 &gt;</S.More>
           </S.ForumHeader>
           {questions.map((question, index) => (
-            <S.QuestionItem key={index}>
+            <S.QuestionItem
+              key={index}
+              onClick={() => handleQnAClick(question.id)}
+            >
               <S.QuestionTitle>{question.title}</S.QuestionTitle>
               <S.QuestionDate>
                 {new Date(question.creation_date).toLocaleDateString()}
