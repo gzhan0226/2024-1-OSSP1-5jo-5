@@ -36,28 +36,28 @@ const ApiDetailPage = () => {
     : "/img/default_api.png";
 
   const handleGoButtonClick = () => {
-    window.location.href = apiDetail.base_url; // 이동하고자 하는 경로로 변경
+    window.location.href = apiDetail.base_url;
   };
 
   return (
     <S.Container>
       <SearchBar />
       <S.AboutApi>
-        <div>
+        <S.ColDiv>
           <S.Favicon src={faviconSrc} alt="API Favicon" />
           <p>API 등록자 : {apiDetail.user_id}</p>
           <p>
             #{apiDetail.pricepolicy} #{apiDetail.category}
           </p>
-        </div>
-        <div>
+        </S.ColDiv>
+        <S.ColDiv>
           <S.Example isProvided={isExampleCodeProvided}>
             {isExampleCodeProvided ? "예시코드 제공" : "예시코드 미제공"}
           </S.Example>
           <h1>{apiDetail.name}</h1>
           <p>{apiDetail.description}</p>
-        </div>
-        <div>
+        </S.ColDiv>
+        <S.ColDiv>
           <S.HeartButton onClick={toggleLike} isLiked={isLiked}>
             {isLiked ? "❤️" : "🤍"}
           </S.HeartButton>
@@ -78,7 +78,7 @@ const ApiDetailPage = () => {
           </svg>
           {apiDetail.view}Views
           <S.GoButton onClick={handleGoButtonClick}>URL 이동</S.GoButton>
-        </div>
+        </S.ColDiv>
       </S.AboutApi>
     </S.Container>
   );
