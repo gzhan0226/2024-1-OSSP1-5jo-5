@@ -6,6 +6,12 @@ import "./App.css";
 import SearchResultPage from "./pages/searchResult/SearchResultPage";
 import ApiDetailPage from "./pages/apidetail/ApiDetailPage";
 import SignUp from "./pages/signup/signup";
+import Login from "./pages/login/login";
+import Board from './pages/board/board';
+import PostAPI from './pages/postAPI/postAPI';
+import WriteBoard from './pages/write/write';
+import ReadFree from './pages/readfree/readFree';
+import ReadQnA from './pages/readqna/readQnA';
 
 const App = () => {
   return (
@@ -18,6 +24,12 @@ const App = () => {
             <Route path="/allresult" element={<SearchResultPage />} />
             <Route path="/api-details/:id" element={<ApiDetailPage />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/board" element={<Board />} />
+            <Route path="/postAPI" element={<PostAPI />} />
+            <Route path="/write" element={<WriteBoard />} />
+            <Route path="/readFree/:postId" element={<ReadFree />} />
+            <Route path="/readQnA/:postId" element={<ReadQnA />} />
           </Routes>
         </div>
       </div>
