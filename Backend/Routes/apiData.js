@@ -226,8 +226,6 @@ module.exports = router;
 // [] 수정
 // [v] 삭제
 
-// 간단정보(호버): apilist.js
-
 /*
 {
   "user_id": 1,

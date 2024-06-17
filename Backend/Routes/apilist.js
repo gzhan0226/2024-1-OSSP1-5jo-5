@@ -167,7 +167,7 @@ const search = async (req, res) => {
       message: "ok",
       totalItems: totalItems,
       totalPages: totalPages,
-      results: results,
+      result: results,
     });
   } catch (error) {
     console.error("database query error: ", error);
