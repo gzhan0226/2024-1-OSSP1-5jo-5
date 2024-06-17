@@ -165,3 +165,73 @@ export const QuestionDate = styled.div`
   font-size: 12px;
   color: #999;
 `;
+
+export const PostItem = styled.div`
+  padding: 20px;
+  width: 70%;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  div {
+    flex: 1;
+  }
+
+  h4 {
+    margin-top: 0px;
+    font-size: 18px;
+    color: #333;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #777;
+  }
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+
+  button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+
+    &:hover {
+      background-color: #f0f0f0;
+      border-color: #999;
+    }
+
+    &:active {
+      background-color: #e0e0e0;
+      border-color: #666;
+    }
+  }
+
+  span {
+    margin: 0 10px;
+    font-size: 16px;
+  }
+`;

@@ -4,7 +4,7 @@ import NavBar from "./component/common/NavBar";
 import MainPage from "./pages/main/Mainpage";
 import "./App.css";
 import SearchResultPage from "./pages/searchResult/SearchResultPage";
-import ApiDetailPage from "./pages/apidetail/ApiDetailPage";
+import ApiDetailPage from "./pages/apiDetail/ApiDetailPage";
 import SignUp from "./pages/signup/signup";
 import MyPage from "./pages/mypage/mypage";
 import Login from "./pages/login/login";
@@ -13,6 +13,7 @@ import WriteBoard from "./pages/write/write";
 import ReadFree from "./pages/readfree/readFree";
 import ReadQnA from "./pages/readqna/readQnA";
 import Board from "./pages/board/board";
+import MyPagePost from "./pages/mypage/mypagePost";
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/write" element={<WriteBoard />} />
             <Route path="/readFree/:postId" element={<ReadFree />} />
             <Route path="/readQnA/:postId" element={<ReadQnA />} />
+            <Route path="/mypage/postdetail" element={<MyPagePost />} />
           </Routes>
         </div>
       </div>
