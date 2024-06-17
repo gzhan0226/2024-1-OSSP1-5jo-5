@@ -10,11 +10,13 @@ const MyPage = () => {
   const [userData, setUserData] = useState(null);
   const [likedApis, setLikedApis] = useState([]);
   const [enrollApis, setEnrollApis] = useState([]);
-
+  const [questions, setQuestions] = useState([]);
   const [error, setError] = useState(null);
 
   const likeEndpoint = "http://localhost:8080/api/like/list?user_id=1";
   const enrollEndpoint = "http://localhost:8080/api/list?user_id=1";
+  const questionEndpoint =
+    "http://localhost:8080/api/forums?type=question&user_id=1";
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -46,9 +48,19 @@ const MyPage = () => {
       }
     };
 
-    fetchEnrollApis();
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get(questionEndpoint);
+        setQuestions(response.data.result.slice(0, 4)); // Get only first 4 items
+      } catch (err) {
+        setError("An error occurred while fetching questions");
+      }
+    };
+
     fetchUserData();
     fetchLikedApis();
+    fetchEnrollApis();
+    fetchQuestions();
   }, []);
 
   const navigate = useNavigate();
@@ -65,6 +77,15 @@ const MyPage = () => {
     });
   };
 
+  const handleCardClick = (id) => {
+    navigate(`/api-details/${id}`);
+  };
+
+  //말줄임표
+  const truncate = (str, maxLength) => {
+    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+  };
+
   return (
     <S.Container>
       <SearchBar />
@@ -74,10 +95,16 @@ const MyPage = () => {
         <div>{error ? error : "Loading..."}</div>
       )}
       <S.ApiBox>
-        <S.Title>내가 좋아요 누른 API</S.Title>
+        <S.ApiBoxHeader>
+          <S.Title>내가 좋아요 누른 API</S.Title>
+          <S.More onClick={likeApiClick}>더보기 &gt;</S.More>
+        </S.ApiBoxHeader>
         <S.CardGrid>
           {likedApis.map((api, index) => (
-            <S.CardGridItem key={index}>
+            <S.CardGridItem
+              key={index}
+              onClick={() => handleCardClick(api.api_id)}
+            >
               <ApiCard
                 icon={api.favicon || "/img/default_api.png"}
                 views={api.view}
@@ -86,13 +113,18 @@ const MyPage = () => {
             </S.CardGridItem>
           ))}
         </S.CardGrid>
-        <S.More onClick={likeApiClick}>더보기 &gt;</S.More>
       </S.ApiBox>
       <S.ApiBox>
-        <S.Title>내가 등록한 API</S.Title>
+        <S.ApiBoxHeader>
+          <S.Title>내가 등록한 API</S.Title>
+          <S.More onClick={enrollApiClick}>더보기 &gt;</S.More>
+        </S.ApiBoxHeader>
         <S.CardGrid>
           {enrollApis.map((api, index) => (
-            <S.CardGridItem key={index}>
+            <S.CardGridItem
+              key={index}
+              onClick={() => handleCardClick(api.api_id)}
+            >
               <ApiCard
                 icon={api.favicon || "/img/default_api.png"}
                 views={api.view}
@@ -101,8 +133,40 @@ const MyPage = () => {
             </S.CardGridItem>
           ))}
         </S.CardGrid>
-        <S.More onClick={enrollApiClick}>더보기 &gt;</S.More>
       </S.ApiBox>
+
+      <S.ForumContainer>
+        <S.ForumBox>
+          <S.ForumHeader>
+            <S.Title>내가 쓴 글</S.Title>
+            <S.More>더보기 &gt;</S.More>
+          </S.ForumHeader>
+          {questions.map((question, index) => (
+            <S.QuestionItem key={index}>
+              <S.QuestionTitle>{truncate(question.title, 10)}</S.QuestionTitle>
+
+              <S.QuestionDate>
+                {new Date(question.creation_date).toLocaleDateString()}
+              </S.QuestionDate>
+            </S.QuestionItem>
+          ))}
+        </S.ForumBox>
+
+        <S.ForumBox>
+          <S.ForumHeader>
+            <S.Title>내가 쓴 질문</S.Title>
+            <S.More>더보기 &gt;</S.More>
+          </S.ForumHeader>
+          {questions.map((question, index) => (
+            <S.QuestionItem key={index}>
+              <S.QuestionTitle>{question.title}</S.QuestionTitle>
+              <S.QuestionDate>
+                {new Date(question.creation_date).toLocaleDateString()}
+              </S.QuestionDate>
+            </S.QuestionItem>
+          ))}
+        </S.ForumBox>
+      </S.ForumContainer>
     </S.Container>
   );
 };

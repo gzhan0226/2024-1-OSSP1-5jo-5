@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   background-color: rgb(245, 245, 251);
-  width: 84vw;
+  width: 83vw;
   min-height: 100vh;
+  padding-bottom: 130px;
 `;
 
 export const Profile = styled.div`
@@ -73,7 +74,7 @@ export const UserValue = styled.div`
 `;
 
 export const ApiBox = styled.div`
-  width: 75%;
+  width: 80%;
   height: fit-content;
   padding: 30px 50px;
   background-color: white;
@@ -93,7 +94,7 @@ export const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  margin-top: 30px;
+  margin-bottom: 30px;
 `;
 
 export const CardGridItem = styled.div`
@@ -106,4 +107,61 @@ export const More = styled.p`
   font-size: 23px;
   font-weight: 600;
   margin-left: auto;
+  cursor: pointer;
+`;
+
+export const ApiBoxHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+export const ForumContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 100px 120px 0px 100px;
+`;
+
+export const ForumBox = styled.div`
+  width: 45%;
+  height: fit-content;
+  padding: 10px 30px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+`;
+
+export const ForumHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const QuestionItem = styled.div`
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+export const QuestionTitle = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+export const QuestionContent = styled.div`
+  font-size: 14px;
+  color: #666;
+`;
+
+export const QuestionDate = styled.div`
+  font-size: 12px;
+  color: #999;
 `;
