@@ -2,9 +2,9 @@
 import React from "react";
 import * as S from "./style";
 
-const ApiCard = ({ icon, views, title, description }) => {
+const ApiCard = ({ icon, views, title, description, width }) => {
   return (
-    <S.CardContainer>
+    <S.CardContainer width={width}>
       <S.CardIcon>
         <img src={icon} alt="Icon" />
       </S.CardIcon>
