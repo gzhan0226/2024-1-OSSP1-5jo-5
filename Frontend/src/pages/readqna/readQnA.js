@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import SearchBar from "../../component/common/SearchBar";
 import * as S from './readQnAStyle';
 import axios from 'axios';
@@ -16,7 +17,7 @@ const ReadQnA = () => {
   const [editingReplyId, setEditingReplyId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const answersPerPage = 5;
-  const userId = 'exampleUserId'; // 현재 사용자의 ID를 설정하세요
+  const userId = Cookies.get('user_id'); // 쿠키에서 사용자 ID를 가져옵니다.
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -88,10 +89,23 @@ const ReadQnA = () => {
       return;
     }
 
-    // Implement answer submission logic here
+    try {
+      const response = await axios.post(`http://localhost:8080/api/question/comment?forum_id=1&question_id=${postId}`, {
+        user_id: userId,
+        content: newAnswerContent,
+      });
 
-    setNewAnswerContent('');
-    setShowAnswerBox(false);
+      if (response.data.code === 201) {
+        setAnswers([...answers, response.data.result]);
+        setNewAnswerContent('');
+        setShowAnswerBox(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Answer submit error:', error);
+      alert('답변 작성 중 오류가 발생했습니다.');
+    }
   };
 
   const toggleReplyBox = (answerId) => {
@@ -113,9 +127,27 @@ const ReadQnA = () => {
       return;
     }
 
-    // Implement reply submission logic here
+    try {
+      const response = await axios.post(`http://localhost:8080/api/question/comment?forum_id=1&question_id=${postId}`, {
+        user_id: userId,
+        content,
+        parent_id: answerId,
+      });
 
-    setReplyContent({ ...replyContent, [answerId]: '' });
+      if (response.data.code === 201) {
+        setAnswers(answers.map(answer =>
+          answer.id === answerId
+            ? { ...answer, replies: [...answer.replies, response.data.result], showReplyBox: false }
+            : answer
+        ));
+        setReplyContent({ ...replyContent, [answerId]: '' });
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Reply submit error:', error);
+      alert('답글 작성 중 오류가 발생했습니다.');
+    }
   };
 
   const handleAnswerEdit = (answerId, content) => {
