@@ -48,7 +48,7 @@ const getFaviconUrl = async (baseUrl) => {
 };
 
 const getList = async (req, res) => {
-  const { categoryId, page = 1, sort = "newest" } = req.query;
+  const { user_id, categoryId, page = 1, sort = "newest" } = req.query;
   const pageSize = 9;
   const offset = page ? (page - 1) * pageSize : 0;
 
@@ -57,6 +57,10 @@ const getList = async (req, res) => {
   if (categoryId) {
     conditions.push("category = ?");
     queryParams.push(Categories[categoryId]);
+  }
+  if (user_id) {
+    conditions.push("user_id = ?");
+    queryParams.push(user_id);
   }
   let countQuery = `select count(*) as total from APIs`;
   let query = `select * from APIs`;
