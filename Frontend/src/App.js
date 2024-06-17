@@ -6,6 +6,13 @@ import "./App.css";
 import SearchResultPage from "./pages/searchResult/SearchResultPage";
 import ApiDetailPage from "./pages/apiDetail/ApiDetailPage";
 import SignUp from "./pages/signup/signup";
+import MyPage from "./pages/mypage/mypage";
+import Login from "./pages/login/login";
+import PostAPI from "./pages/postAPI/postAPI";
+import WriteBoard from "./pages/write/write";
+import ReadFree from "./pages/readfree/readFree";
+import ReadQnA from "./pages/readqna/readQnA";
+import Board from "./pages/board/board";
 
 const App = () => {
   return (
