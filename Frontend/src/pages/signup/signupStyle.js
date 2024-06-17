@@ -54,17 +54,6 @@ export const UsernameInput = styled.input`
   box-sizing: border-box;
 `;
 
-export const CheckButton = styled.button`
-  padding: 10px;
-  background-color: #5060FF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 10px;
-  box-sizing: border-box;
-`;
-
 export const SubmitButton = styled.button`
   width: 100%;
   padding: 10px;
@@ -81,4 +70,10 @@ export const Label = styled.div`
   font-size: 14px;
   margin: 5px 0 0;
   text-align: left;
+`;
+
+export const ErrorMessage = styled.div`
+  color: red;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;

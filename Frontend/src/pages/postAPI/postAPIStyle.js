@@ -18,12 +18,12 @@ export const MainContent = styled.div`
   width: 100%;
   padding: 20px;
   background-color: rgb(245,245,251);
-  margin-left: -30px;
+  margin-left: -150px;
 `;
 
 export const FormContainer = styled.div`
   width: 100%;
-  max-width: 1100px;
+  max-width: 1400px;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -38,17 +38,21 @@ export const FormContainer = styled.div`
   }
 
   textarea {
-    width: 100%;
-    height: 100px;
+    width: 90%;
+    height: 200px;
   }
 
   input[type="text"], select {
-    width: 100%;
+    width: 30%;
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  select {
+    width: 10%;
   }
 `;
 
@@ -66,11 +70,31 @@ export const RadioGroup = styled.div`
   }
 `;
 
-export const EndpointItem = styled.div`
+export const Item = styled.div`
+  width: 40%;
+  display: flex;
+  justify-between: space-between;
+  align-items: center;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-bottom: 5px;
+
+  span {
+    flex-grow: 1;
+  }
+
+  button {
+    padding: 5px 10px;
+    background-color: #5060ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
 `;
 
 export const SubmitButton = styled.button`
