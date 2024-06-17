@@ -1,5 +1,4 @@
 //api나타내는 표
-
 import styled from "styled-components";
 
 export const Container = styled.div`

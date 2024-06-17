@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import SearchBar from "../../component/common/SearchBar";
-import * as S from './readQnAStyle';
-import axios from 'axios';
+import * as S from "./readQnAStyle";
+import axios from "axios";
 
 const ReadQnA = () => {
   const { postId } = useParams();
@@ -10,25 +10,27 @@ const ReadQnA = () => {
   const [post, setPost] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [showAnswerBox, setShowAnswerBox] = useState(false);
-  const [newAnswerContent, setNewAnswerContent] = useState('');
+  const [newAnswerContent, setNewAnswerContent] = useState("");
   const [editingAnswerId, setEditingAnswerId] = useState(null);
   const [replyContent, setReplyContent] = useState({});
   const [editingReplyId, setEditingReplyId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const answersPerPage = 5;
-  const userId = 'exampleUserId'; // 현재 사용자의 ID를 설정하세요
+  const userId = "exampleUserId"; // 현재 사용자의 ID를 설정하세요
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/question?forum_id=1&question_id=${postId}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/question?forum_id=1&question_id=${postId}`
+        );
         if (response.data.code === 200) {
           setPost(response.data.result);
         } else {
-          console.error('Error:', response.data.message);
+          console.error("Error:", response.data.message);
         }
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
       }
     };
 
@@ -38,14 +40,16 @@ const ReadQnA = () => {
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/question/comment?forum_id=1&question_id=${postId}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/question/comment?forum_id=1&question_id=${postId}`
+        );
         if (response.data.code === 200) {
           setAnswers(response.data.result);
         } else {
-          console.error('Error:', response.data.message);
+          console.error("Error:", response.data.message);
         }
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
       }
     };
 
@@ -53,21 +57,23 @@ const ReadQnA = () => {
   }, [postId]);
 
   const handleEditPost = () => {
-    navigate('/write', { state: { post, type: 'question' } });
+    navigate("/write", { state: { post, type: "question" } });
   };
 
   const handleDeletePost = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/question?forum_id=1&question_id=${postId}`);
+      const response = await axios.delete(
+        `http://localhost:8080/api/question?forum_id=1&question_id=${postId}`
+      );
       if (response.data.code === 200) {
         alert(response.data.message);
-        navigate('/board');
+        navigate("/board");
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      console.error('Delete error:', error);
-      alert('게시글 삭제 중 오류가 발생했습니다.');
+      console.error("Delete error:", error);
+      alert("게시글 삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -83,23 +89,25 @@ const ReadQnA = () => {
   };
 
   const handleNewAnswerSubmit = async () => {
-    if (newAnswerContent.trim() === '') {
-      alert('답변을 입력하세요.');
+    if (newAnswerContent.trim() === "") {
+      alert("답변을 입력하세요.");
       return;
     }
 
     // Implement answer submission logic here
 
-    setNewAnswerContent('');
+    setNewAnswerContent("");
     setShowAnswerBox(false);
   };
 
   const toggleReplyBox = (answerId) => {
-    setAnswers(answers.map(answer =>
-      answer.id === answerId
-        ? { ...answer, showReplyBox: !answer.showReplyBox }
-        : answer
-    ));
+    setAnswers(
+      answers.map((answer) =>
+        answer.id === answerId
+          ? { ...answer, showReplyBox: !answer.showReplyBox }
+          : answer
+      )
+    );
   };
 
   const handleReplyChange = (answerId, content) => {
@@ -109,13 +117,13 @@ const ReadQnA = () => {
   const handleReplySubmit = async (answerId) => {
     const content = replyContent[answerId]?.trim();
     if (!content) {
-      alert('답글을 입력하세요.');
+      alert("답글을 입력하세요.");
       return;
     }
 
     // Implement reply submission logic here
 
-    setReplyContent({ ...replyContent, [answerId]: '' });
+    setReplyContent({ ...replyContent, [answerId]: "" });
   };
 
   const handleAnswerEdit = (answerId, content) => {
@@ -125,44 +133,53 @@ const ReadQnA = () => {
   };
 
   const handleAnswerUpdate = async () => {
-    if (newAnswerContent.trim() === '') {
-      alert('답변을 입력하세요.');
+    if (newAnswerContent.trim() === "") {
+      alert("답변을 입력하세요.");
       return;
     }
 
     try {
-      const response = await axios.put(`http://localhost:8080/api/question/comment?comment_id=${editingAnswerId}`, {
-        content: newAnswerContent,
-      });
+      const response = await axios.put(
+        `http://localhost:8080/api/question/comment?comment_id=${editingAnswerId}`,
+        {
+          content: newAnswerContent,
+        }
+      );
 
       if (response.data.code === 200) {
-        setAnswers(answers.map(answer =>
-          answer.id === editingAnswerId ? { ...answer, content: newAnswerContent } : answer
-        ));
+        setAnswers(
+          answers.map((answer) =>
+            answer.id === editingAnswerId
+              ? { ...answer, content: newAnswerContent }
+              : answer
+          )
+        );
         setEditingAnswerId(null);
-        setNewAnswerContent('');
+        setNewAnswerContent("");
         setShowAnswerBox(false);
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      console.error('Update error:', error);
-      alert('답변 수정 중 오류가 발생했습니다.');
+      console.error("Update error:", error);
+      alert("답변 수정 중 오류가 발생했습니다.");
     }
   };
 
   const handleAnswerDelete = async (answerId) => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/question/comment?comment_id=${answerId}`);
+      const response = await axios.delete(
+        `http://localhost:8080/api/question/comment?comment_id=${answerId}`
+      );
       if (response.data.code === 200) {
-        setAnswers(answers.filter(answer => answer.id !== answerId));
+        setAnswers(answers.filter((answer) => answer.id !== answerId));
         alert(response.data.message);
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      console.error('Delete error:', error);
-      alert('답변 삭제 중 오류가 발생했습니다.');
+      console.error("Delete error:", error);
+      alert("답변 삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -210,7 +227,9 @@ const ReadQnA = () => {
                     value={newAnswerContent}
                     onChange={handleNewAnswerChange}
                   />
-                  <button onClick={handleNewAnswerSubmit}>{editingAnswerId ? '수정' : '등록'}</button>
+                  <button onClick={handleNewAnswerSubmit}>
+                    {editingAnswerId ? "수정" : "등록"}
+                  </button>
                 </S.AnswerBox>
               )}
               {currentAnswers.map((answer) => (
@@ -232,63 +251,90 @@ const ReadQnA = () => {
                       <p>{answer.content}</p>
                       {userId === answer.authorId && (
                         <S.AnswerActions>
-                          <button onClick={() => handleAnswerEdit(answer.id, answer.content)}>수정</button>
-                          <button onClick={() => handleAnswerDelete(answer.id)}>삭제</button>
+                          <button
+                            onClick={() =>
+                              handleAnswerEdit(answer.id, answer.content)
+                            }
+                          >
+                            수정
+                          </button>
+                          <button onClick={() => handleAnswerDelete(answer.id)}>
+                            삭제
+                          </button>
                         </S.AnswerActions>
                       )}
                       {userId === post.authorId && (
                         <S.AnswerActions>
-                          <button onClick={() => toggleReplyBox(answer.id)}>재답변</button>
-                          <button style={{ backgroundColor: answer.isAccepted ? '#4050d4' : '#5060ff' }}>
-                            {answer.isAccepted ? '채택됨' : '채택'}
+                          <button onClick={() => toggleReplyBox(answer.id)}>
+                            재답변
+                          </button>
+                          <button
+                            style={{
+                              backgroundColor: answer.isAccepted
+                                ? "#4050d4"
+                                : "#5060ff",
+                            }}
+                          >
+                            {answer.isAccepted ? "채택됨" : "채택"}
                           </button>
                         </S.AnswerActions>
                       )}
                     </>
                   )}
-                  {answer.replies && answer.replies.map((reply) => (
-                    <S.ReplyItem key={reply.id}>
-                      <S.ReplyMeta>
-                        <span>작성자: {reply.authorId}</span>
-                        <span>작성일: {reply.date}</span>
-                      </S.ReplyMeta>
-                      {editingReplyId === reply.id ? (
-                        <S.ReplyBox>
-                          <textarea
-                            value={replyContent[answer.id] || ''}
-                            onChange={(e) => handleReplyChange(answer.id, e.target.value)}
-                          />
-                          <button onClick={() => handleReplySubmit(answer.id)}>수정</button>
-                        </S.ReplyBox>
-                      ) : (
-                        <>
-                          <p>{reply.content}</p>
-                          {userId === reply.authorId && (
-                            <S.ReplyActions>
-                              <button>수정</button>
-                              <button>삭제</button>
-                            </S.ReplyActions>
-                          )}
-                        </>
-                      )}
-                    </S.ReplyItem>
-                  ))}
+                  {answer.replies &&
+                    answer.replies.map((reply) => (
+                      <S.ReplyItem key={reply.id}>
+                        <S.ReplyMeta>
+                          <span>작성자: {reply.authorId}</span>
+                          <span>작성일: {reply.date}</span>
+                        </S.ReplyMeta>
+                        {editingReplyId === reply.id ? (
+                          <S.ReplyBox>
+                            <textarea
+                              value={replyContent[answer.id] || ""}
+                              onChange={(e) =>
+                                handleReplyChange(answer.id, e.target.value)
+                              }
+                            />
+                            <button
+                              onClick={() => handleReplySubmit(answer.id)}
+                            >
+                              수정
+                            </button>
+                          </S.ReplyBox>
+                        ) : (
+                          <>
+                            <p>{reply.content}</p>
+                            {userId === reply.authorId && (
+                              <S.ReplyActions>
+                                <button>수정</button>
+                                <button>삭제</button>
+                              </S.ReplyActions>
+                            )}
+                          </>
+                        )}
+                      </S.ReplyItem>
+                    ))}
                   {answer.showReplyBox && editingReplyId === null && (
                     <S.ReplyBox>
                       <textarea
-                        value={replyContent[answer.id] || ''}
-                        onChange={(e) => handleReplyChange(answer.id, e.target.value)}
+                        value={replyContent[answer.id] || ""}
+                        onChange={(e) =>
+                          handleReplyChange(answer.id, e.target.value)
+                        }
                         placeholder="재답변을 입력하세요"
                       />
-                      <button onClick={() => handleReplySubmit(answer.id)}>등록</button>
+                      <button onClick={() => handleReplySubmit(answer.id)}>
+                        등록
+                      </button>
                     </S.ReplyBox>
                   )}
                 </S.AnswerItem>
               ))}
               <S.Pagination>
                 {Array.from({ length: totalAnswerPages }, (_, i) => (
-                  <S.PaginationButton 
-                    key={i + 1} 
+                  <S.PaginationButton
+                    key={i + 1}
                     active={currentPage === i + 1}
                     onClick={() => setCurrentPage(i + 1)}
                   >

@@ -1,8 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import * as S from "./Style";
 import { FaUserCircle } from "react-icons/fa";
+import axios from "axios";
 
 const ProfileBox = ({ userData }) => {
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [totalAnswers, setTotalAnswers] = useState(0);
+  const user_id = userData.user_id;
+
+  useEffect(() => {
+    const fetchTotalItems = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/list?user_id=${user_id}`
+        );
+        setTotalItems(response.data.totalItems);
+      } catch (error) {
+        console.error("Error fetching total items:", error);
+      }
+    };
+
+    const fetchTotalQuestions = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/forums?type=question&user_id=${user_id}`
+        );
+        setTotalQuestions(response.data.totalItems);
+      } catch (error) {
+        console.error("Error fetching total questions:", error);
+      }
+    };
+
+    const fetchTotalAnswers = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/question/comment?user_id=${user_id}`
+        );
+        setTotalAnswers(response.data.totalItems);
+      } catch (error) {
+        console.error("Error fetching total answers:", error);
+      }
+    };
+
+    fetchTotalItems();
+    fetchTotalQuestions();
+    fetchTotalAnswers();
+  }, [user_id]);
+
   return (
     <S.Profile>
       <S.Cdiv>
@@ -37,15 +82,15 @@ const ProfileBox = ({ userData }) => {
           >
             <S.UserItem first>
               <S.UserLabel>등록 API 수</S.UserLabel>
-              <S.UserValue>12</S.UserValue>
+              <S.UserValue>{totalItems}</S.UserValue>
             </S.UserItem>
             <S.UserItem>
               <S.UserLabel>질문 수</S.UserLabel>
-              <S.UserValue>3</S.UserValue>
+              <S.UserValue>{totalQuestions}</S.UserValue>
             </S.UserItem>
             <S.UserItem>
               <S.UserLabel>답변 수</S.UserLabel>
-              <S.UserValue>20</S.UserValue>
+              <S.UserValue>{totalAnswers}</S.UserValue>
             </S.UserItem>
           </S.UserContainer>
         </S.Rdiv>
