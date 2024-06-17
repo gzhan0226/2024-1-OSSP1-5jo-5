@@ -9,7 +9,7 @@ export const Container = styled.div`
 export const Profile = styled.div`
   background-color: white;
   width: 26%;
-  height: 17vh;
+  height: fit-content;
   margin-left: 120px;
   margin-top: 50px;
   border-radius: 16px;
@@ -70,4 +70,40 @@ export const UserLabel = styled.div`
 export const UserValue = styled.div`
   font-size: 18px;
   font-weight: bold;
+`;
+
+export const ApiBox = styled.div`
+  width: 75%;
+  height: fit-content;
+  padding: 30px 50px;
+  background-color: white;
+  margin-top: 50px;
+  margin-left: 120px;
+  border-radius: 16px;
+`;
+
+export const Title = styled.p`
+  color: #5060ff;
+  margin: 0px 0px;
+  font-size: 23px;
+  font-weight: 600;
+`;
+
+export const CardGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+`;
+
+export const CardGridItem = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const More = styled.p`
+  color: #5060ff;
+  font-size: 23px;
+  font-weight: 600;
+  margin-left: auto;
 `;

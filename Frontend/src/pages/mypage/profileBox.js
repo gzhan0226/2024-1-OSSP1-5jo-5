@@ -2,16 +2,11 @@ import React from "react";
 import * as S from "./Style";
 import { FaUserCircle } from "react-icons/fa";
 
-const ProfileBox = () => {
+const ProfileBox = ({ userData }) => {
   return (
     <S.Profile>
       <S.Cdiv>
-        <S.Rdiv
-        // style={{
-        //   marginLeft: "auto",
-        //   marginRight: "auto",
-        // }}
-        >
+        <S.Rdiv>
           <FaUserCircle size={70} />
           <S.Cdiv>
             <S.Rdiv>
@@ -24,13 +19,13 @@ const ProfileBox = () => {
                   marginLeft: "40px",
                 }}
               >
-                닉네임어쩌구저쩌구
+                {userData.user_name}
               </p>
               <p style={{ marginBottom: "8px", marginLeft: "10px" }}>
-                dddol09140914
+                {userData.user_id}
               </p>
             </S.Rdiv>
-            <S.Level>Level : 8</S.Level>
+            <S.Level>Level : {userData.levelpoint}</S.Level>
           </S.Cdiv>
         </S.Rdiv>
         <S.Rdiv style={{ marginTop: "15px" }}>
