@@ -16,16 +16,16 @@ export const Left = styled.div`
 export const Right = styled.div`
   flex: 1;
   display: flex;
-  justify-content: flex-end; /* Align to the right */
+  justify-content: flex-end;
   align-items: center;
   background: linear-gradient(135deg, #4a90e2, #6a5eff);
   color: white;
-  padding: 50px 100px; /* Added padding to push content further right */
+  padding: 50px 100px;
 `;
 
 export const Box = styled.div`
   text-align: right;
-  max-width: 600px; /* Increased max-width */
+  max-width: 1200px;
   width: 100%;
 `;
 
@@ -108,23 +108,29 @@ export const StartButton = styled.button`
   background-color: white;
   color: #4a90e2;
   border: none;
-  margin-top: 60px; /* Increased margin-top for more space */
-  padding: 12px 24px;
+  margin-top: 20px;
+  padding: 18px 36px;
   cursor: pointer;
   border-radius: 5px;
 `;
 
 export const Title = styled.h1`
-  font-size: 36px;
-  margin-bottom: 60px; /* Increased margin for more spacing */
+  font-size: 48px;
+  margin-bottom: 120px; 
 `;
 
 export const Subtitle = styled.h2`
-  font-size: 28px;
-  margin-bottom: 60px; /* Increased margin for more spacing */
+  font-size: 40px;
+  margin-bottom: 120px; 
 `;
 
 export const Text = styled.h3`
-  font-size: 24px;
-  margin-bottom: 60px; /* Increased margin for more spacing */
+  font-size: 36px;
+  margin-bottom: 120px; 
+`;
+
+export const ErrorMessage = styled.div`
+  color: red;
+  margin-top: -10px;
+  margin-bottom: 20px;
 `;

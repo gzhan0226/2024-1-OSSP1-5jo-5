@@ -6,7 +6,6 @@ import "./App.css";
 import SearchResultPage from "./pages/searchResult/SearchResultPage";
 import ApiDetailPage from "./pages/apiDetail/ApiDetailPage";
 import SignUp from "./pages/signup/signup";
-import MyPage from "./pages/mypage/mypage";
 
 const App = () => {
   return (
@@ -20,6 +19,12 @@ const App = () => {
             <Route path="/api-details/:id" element={<ApiDetailPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/board" element={<Board />} />
+            <Route path="/postAPI" element={<PostAPI />} />
+            <Route path="/write" element={<WriteBoard />} />
+            <Route path="/readFree/:postId" element={<ReadFree />} />
+            <Route path="/readQnA/:postId" element={<ReadQnA />} />
           </Routes>
         </div>
       </div>
