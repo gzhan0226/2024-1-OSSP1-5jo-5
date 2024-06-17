@@ -1,49 +1,77 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import SearchBar from "../../component/common/SearchBar";
 import * as S from './readQnAStyle';
+import axios from 'axios';
 
 const ReadQnA = () => {
   const { postId } = useParams();
-  const post = {
-    id: postId,
-    title: 'React에서 OAuth 통합하는 방법',
-    apiName: 'OAuth API',
-    authorId: 'author123',
-    date: '2024-06-01',
-    content: 'React 애플리케이션에서 OAuth 인증을 통합하려고 합니다. 이를 달성하는 방법에 대한 자세한 가이드나 모범 사례를 제공해 주실 수 있나요?',
-  };
-
-  const userId = 'user45';
+  const navigate = useNavigate();
+  const [post, setPost] = useState(null);
+  const [answers, setAnswers] = useState([]);
   const [showAnswerBox, setShowAnswerBox] = useState(false);
   const [newAnswerContent, setNewAnswerContent] = useState('');
   const [editingAnswerId, setEditingAnswerId] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const answersPerPage = 5;
-
-  const [answers, setAnswers] = useState([
-    {
-      id: 1,
-      authorId: 'user456',
-      date: '2024-06-02',
-      content: 'React에서 OAuth를 통합하려면 react-oauth2-hook이나 react-oauth 같은 라이브러리를 사용할 수 있습니다. 안전하게 OAuth 토큰을 처리하기 위해 백엔드 서비스를 만들어야 합니다.',
-      showReplyBox: false,
-      isAccepted: true,
-      replies: [
-        {
-          id: 1.1,
-          authorId: 'author123',
-          date: '2024-06-03',
-          content: '추천해 주셔서 감사합니다. react-oauth2-hook을 사용하는 예시를 제공해 주실 수 있나요?',
-        },
-      ],
-    },
-  ]);
-
   const [replyContent, setReplyContent] = useState({});
   const [editingReplyId, setEditingReplyId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const answersPerPage = 5;
+  const userId = 'exampleUserId'; // 현재 사용자의 ID를 설정하세요
 
-  const hasUserAnswered = answers.some(answer => answer.authorId === userId);
-  const hasUserRepliedToAnswer = (answer) => answer.replies.some(reply => reply.authorId === userId);
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/question?forum_id=1&question_id=${postId}`);
+        if (response.data.code === 200) {
+          setPost(response.data.result);
+        } else {
+          console.error('Error:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    fetchPost();
+  }, [postId]);
+
+  useEffect(() => {
+    const fetchAnswers = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/question/comment?forum_id=1&question_id=${postId}`);
+        if (response.data.code === 200) {
+          setAnswers(response.data.result);
+        } else {
+          console.error('Error:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    fetchAnswers();
+  }, [postId]);
+
+  const handleEditPost = () => {
+    navigate('/write', { state: { post, type: 'question' } });
+  };
+
+  const handleDeletePost = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/api/question?forum_id=1&question_id=${postId}`);
+      if (response.data.code === 200) {
+        alert(response.data.message);
+        navigate('/board');
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('게시글 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  if (!post) return <div>Loading...</div>;
 
   const toggleAnswerBox = () => {
     setShowAnswerBox(!showAnswerBox);
@@ -54,51 +82,15 @@ const ReadQnA = () => {
     setNewAnswerContent(e.target.value);
   };
 
-  const handleNewAnswerSubmit = () => {
+  const handleNewAnswerSubmit = async () => {
     if (newAnswerContent.trim() === '') {
       alert('답변을 입력하세요.');
       return;
     }
-    if (editingAnswerId) {
-      setAnswers(answers.map(answer =>
-        answer.id === editingAnswerId
-          ? { ...answer, content: newAnswerContent }
-          : answer
-      ));
-      setEditingAnswerId(null);
-    } else {
-      if (hasUserAnswered || userId === post.authorId) return;
 
-      const newAnswer = {
-        id: Date.now(),
-        authorId: userId,
-        date: new Date().toISOString().split('T')[0],
-        content: newAnswerContent,
-        showReplyBox: false,
-        isAccepted: false,
-        replies: [],
-      };
-      setAnswers([newAnswer, ...answers]);
-    }
+    // Implement answer submission logic here
+
     setNewAnswerContent('');
-    setShowAnswerBox(false);
-  };
-
-  const handleEditPost = () => {
-    alert('기능 구현 예정: 글 수정');
-  };
-
-  const handleDeletePost = () => {
-    alert('기능 구현 예정: 글 삭제');
-  };
-
-  const handleAnswerDelete = (answerId) => {
-    setAnswers(answers.filter(answer => answer.id !== answerId));
-  };
-
-  const handleAnswerEdit = (answerId, content) => {
-    setEditingAnswerId(answerId);
-    setNewAnswerContent(content);
     setShowAnswerBox(false);
   };
 
@@ -114,85 +106,77 @@ const ReadQnA = () => {
     setReplyContent({ ...replyContent, [answerId]: content });
   };
 
-  const handleReplySubmit = (answerId) => {
+  const handleReplySubmit = async (answerId) => {
     const content = replyContent[answerId]?.trim();
     if (!content) {
-      alert('재답변을 입력하세요.');
+      alert('답글을 입력하세요.');
       return;
     }
-    const answer = answers.find(answer => answer.id === answerId);
-    if (editingReplyId) {
-      setAnswers(answers.map(answer =>
-        answer.id === answerId
-          ? {
-            ...answer,
-            replies: answer.replies.map(reply =>
-              reply.id === editingReplyId
-                ? { ...reply, content: content }
-                : reply
-            )
-          }
-          : answer
-      ));
-      setEditingReplyId(null);
-    } else {
-      if (hasUserRepliedToAnswer(answer)) return;
 
-      setAnswers(answers.map(answer =>
-        answer.id === answerId
-          ? {
-            ...answer,
-            replies: [{ id: Date.now(), authorId: userId, content: content, date: new Date().toISOString().split('T')[0] }, ...answer.replies],
-            showReplyBox: false,
-          }
-          : answer
-      ));
-    }
+    // Implement reply submission logic here
+
     setReplyContent({ ...replyContent, [answerId]: '' });
   };
 
-  const handleReplyDelete = (answerId, replyId) => {
-    setAnswers(answers.map(answer =>
-      answer.id === answerId
-        ? {
-          ...answer,
-          replies: answer.replies.filter(reply => reply.id !== replyId),
-        }
-        : answer
-    ));
+  const handleAnswerEdit = (answerId, content) => {
+    setEditingAnswerId(answerId);
+    setNewAnswerContent(content);
+    setShowAnswerBox(true);
   };
 
-  const handleReplyEdit = (answerId, reply) => {
-    setEditingReplyId(reply.id);
-    setReplyContent({ ...replyContent, [answerId]: reply.content });
-  };
+  const handleAnswerUpdate = async () => {
+    if (newAnswerContent.trim() === '') {
+      alert('답변을 입력하세요.');
+      return;
+    }
 
-  const handleAcceptAnswer = (answerId) => {
-    setAnswers(answers.map(answer =>
-      answer.id === answerId
-        ? { ...answer, isAccepted: !answer.isAccepted }
-        : answer
-    ));
-    const acceptedAnswer = answers.find(answer => answer.id === answerId);
-    if (!acceptedAnswer.isAccepted) {
-      alert('이 글을 채택하셨습니다.');
-    } else {
-      alert('이 글 채택을 취소하셨습니다.');
+    try {
+      const response = await axios.put(`http://localhost:8080/api/question/comment?comment_id=${editingAnswerId}`, {
+        content: newAnswerContent,
+      });
+
+      if (response.data.code === 200) {
+        setAnswers(answers.map(answer =>
+          answer.id === editingAnswerId ? { ...answer, content: newAnswerContent } : answer
+        ));
+        setEditingAnswerId(null);
+        setNewAnswerContent('');
+        setShowAnswerBox(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      alert('답변 수정 중 오류가 발생했습니다.');
     }
   };
 
-  // Sorting answers to ensure accepted answers appear first
-  const sortedAnswers = answers.slice().sort((a, b) => b.isAccepted - a.isAccepted || new Date(b.date) - new Date(a.date));
+  const handleAnswerDelete = async (answerId) => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/api/question/comment?comment_id=${answerId}`);
+      if (response.data.code === 200) {
+        setAnswers(answers.filter(answer => answer.id !== answerId));
+        alert(response.data.message);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('답변 삭제 중 오류가 발생했습니다.');
+    }
+  };
 
-  // Pagination logic for answers
-  const indexOfLastAnswer = currentPage * answersPerPage;
-  const indexOfFirstAnswer = indexOfLastAnswer - answersPerPage;
-  const currentAnswers = sortedAnswers.slice(indexOfFirstAnswer, indexOfLastAnswer);
-  const totalAnswerPages = Math.ceil(sortedAnswers.length / answersPerPage);
+  const currentAnswers = answers.slice(
+    (currentPage - 1) * answersPerPage,
+    currentPage * answersPerPage
+  );
+
+  const totalAnswerPages = Math.ceil(answers.length / answersPerPage);
 
   return (
     <S.AppContainer>
       <S.MainContentWrapper>
+        <SearchBar />
         <S.MainContent>
           <S.PostContainer>
             <S.PostTitleBox>
@@ -217,9 +201,7 @@ const ReadQnA = () => {
             <S.AnswersSection>
               <S.AnswersHeader>
                 <h3>답변</h3>
-                {!hasUserAnswered && userId !== post.authorId && (
-                  <button onClick={toggleAnswerBox}>답변 쓰기</button>
-                )}
+                <button onClick={toggleAnswerBox}>답변 쓰기</button>
               </S.AnswersHeader>
               {showAnswerBox && (
                 <S.AnswerBox>
@@ -243,7 +225,7 @@ const ReadQnA = () => {
                         value={newAnswerContent}
                         onChange={handleNewAnswerChange}
                       />
-                      <button onClick={handleNewAnswerSubmit}>수정</button>
+                      <button onClick={handleAnswerUpdate}>수정</button>
                     </S.AnswerBox>
                   ) : (
                     <>
@@ -256,8 +238,8 @@ const ReadQnA = () => {
                       )}
                       {userId === post.authorId && (
                         <S.AnswerActions>
-                          {!hasUserRepliedToAnswer(answer) && <button onClick={() => toggleReplyBox(answer.id)}>재답변</button>}
-                          <button onClick={() => handleAcceptAnswer(answer.id)} style={{ backgroundColor: answer.isAccepted ? '#4050d4' : '#5060ff' }}>
+                          <button onClick={() => toggleReplyBox(answer.id)}>재답변</button>
+                          <button style={{ backgroundColor: answer.isAccepted ? '#4050d4' : '#5060ff' }}>
                             {answer.isAccepted ? '채택됨' : '채택'}
                           </button>
                         </S.AnswerActions>
@@ -283,8 +265,8 @@ const ReadQnA = () => {
                           <p>{reply.content}</p>
                           {userId === reply.authorId && (
                             <S.ReplyActions>
-                              <button onClick={() => handleReplyEdit(answer.id, reply)}>수정</button>
-                              <button onClick={() => handleReplyDelete(answer.id, reply.id)}>삭제</button>
+                              <button>수정</button>
+                              <button>삭제</button>
                             </S.ReplyActions>
                           )}
                         </>

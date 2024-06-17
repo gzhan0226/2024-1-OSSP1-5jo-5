@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import SearchBar from "../../component/common/SearchBar";
 import * as S from './boardStyle';
+import axios from 'axios';
 
 const Board = () => {
   const navigate = useNavigate();
@@ -8,7 +10,8 @@ const Board = () => {
   const [activeTab, setActiveTab] = useState('freeBoard');
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
-  const postsPerPage = 5;
+  const postsPerPage = 10; // 페이지당 게시글 수
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -18,14 +21,31 @@ const Board = () => {
     }
   }, [location]);
 
-  const freeBoardPosts = [/* ... */];
-  const questionBoardPosts = [/* ... */];
-
   useEffect(() => {
-    const newPosts = activeTab === 'freeBoard' ? freeBoardPosts : questionBoardPosts;
-    setPosts(newPosts);
-    setCurrentPage(1);
-  }, [activeTab]);
+    const fetchPosts = async () => {
+      const type = activeTab === 'freeBoard' ? 'general' : 'question';
+      const user_id = null; // 필요한 경우 유저 ID를 설정하세요
+      const api_id = null; // 필요한 경우 API ID를 설정하세요
+
+      let url = `http://localhost:8080/api/forums?type=${type}&page=${currentPage}`;
+      if (user_id) url += `&user_id=${user_id}`;
+      if (type === 'question' && api_id) url += `&api_id=${api_id}`;
+
+      try {
+        const response = await axios.get(url);
+        if (response.data.code === 200) {
+          setPosts(response.data.result);
+          setTotalPages(response.data.totalPages);
+        } else {
+          console.error('Error:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    fetchPosts();
+  }, [activeTab, currentPage]);
 
   const truncateContent = (content, maxLength) => {
     if (content.length > maxLength) {
@@ -37,14 +57,14 @@ const Board = () => {
   const renderPost = (post, index) => (
     <S.PostItem key={`${post.title}-${index}`} onClick={() => handlePostClick(post)}>
       <div>
-        {activeTab === 'questionBoard' && <S.ApiName>{post.api}</S.ApiName>}
+        {activeTab === 'questionBoard' && <S.ApiName>{post.api_id}</S.ApiName>}
         <h4>{post.title}</h4>
         <p>{truncateContent(post.content, 15)}</p>
-        <S.Username>{post.username}</S.Username>
+        <S.Username>{post.user_id}</S.Username>
       </div>
       <S.PostDetails>
-        <p>{post.date}</p>
-        <p>Views: {post.views}</p>
+        <p>{new Date(post.creation_date).toLocaleDateString()}</p>
+        <p>Views: {post.view}</p>
         <p>Comments: {post.comments}</p>
       </S.PostDetails>
     </S.PostItem>
@@ -59,27 +79,28 @@ const Board = () => {
     navigate('/write');
   };
 
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-  const totalPages = Math.ceil(posts.length / postsPerPage);
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setCurrentPage(1);
+  };
 
   return (
     <S.AppContainer>
       <S.MainContentWrapper>
+        <SearchBar />
         <S.MainContent>
           <S.Tabs>
             <div>
-              <S.TabButton active={activeTab === 'freeBoard'} onClick={() => setActiveTab('freeBoard')}>
+              <S.TabButton active={activeTab === 'freeBoard'} onClick={() => handleTabChange('freeBoard')}>
                 자유게시판
               </S.TabButton>
-              <S.TabButton active={activeTab === 'questionBoard'} onClick={() => setActiveTab('questionBoard')}>
+              <S.TabButton active={activeTab === 'questionBoard'} onClick={() => handleTabChange('questionBoard')}>
                 질문게시판
               </S.TabButton>
             </div>
             <S.WriteButton onClick={handleWriteClick}>글쓰기</S.WriteButton>
           </S.Tabs>
-          <S.PostsList>{currentPosts.map((post, index) => renderPost(post, index))}</S.PostsList>
+          <S.PostsList>{posts.map((post, index) => renderPost(post, index))}</S.PostsList>
           <S.Pagination>
             {Array.from({ length: totalPages }, (_, i) => (
               <S.PaginationButton key={i + 1} active={currentPage === i + 1} onClick={() => setCurrentPage(i + 1)}>
