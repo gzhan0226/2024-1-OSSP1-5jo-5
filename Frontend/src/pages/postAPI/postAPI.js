@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SearchBar from "../../component/common/SearchBar";
 import * as S from './postAPIStyle';
 
 const PostAPI = () => {
@@ -192,6 +193,7 @@ const PostAPI = () => {
   return (
     <S.AppContainer>
       <S.MainContentWrapper>
+        <SearchBar />
         <S.MainContent>
           <S.FormContainer>
             <h2>API 등록</h2>

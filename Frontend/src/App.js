@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./component/common/NavBar";
-import MainPage from "./pages/main/MainPage";
+import MainPage from "./pages/main/Mainpage";
 import "./App.css";
 import SearchResultPage from "./pages/searchResult/SearchResultPage";
-import ApiDetailPage from "./pages/apiDetail/ApiDetailPage";
+import ApiDetailPage from "./pages/apidetail/ApiDetailPage";
 import SignUp from "./pages/signup/signup";
 import MyPage from "./pages/mypage/mypage";
 import Login from "./pages/login/login";
