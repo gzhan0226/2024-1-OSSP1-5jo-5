@@ -71,9 +71,3 @@ export const Label = styled.div`
   margin: 5px 0 0;
   text-align: left;
 `;
-
-export const ErrorMessage = styled.div`
-  color: red;
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
