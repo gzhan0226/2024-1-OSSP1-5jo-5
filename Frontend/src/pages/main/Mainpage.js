@@ -3,11 +3,13 @@ import Banner from "../../component/main/Banner";
 import CategoryIcons from "../../component/main/CategoryIcons";
 import PostBoard from "../../component/main/PostBoard";
 import Table from "../../component/main/Table";
-import * as S from "./Style";
+import SearchBar from "../../component/common/SearchBar";
+import * as S from "./style";
 
 const MainPage = () => {
   return (
     <S.MainWrapper>
+      <SearchBar />
       <CategoryIcons />
       <S.BannerWrapper>
         <Banner />
