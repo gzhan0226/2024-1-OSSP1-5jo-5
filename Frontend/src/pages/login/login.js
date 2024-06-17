@@ -1,9 +1,20 @@
-import React from 'react';
-import * as S from './loginStyle';
+// login.js
+import React, { useState } from 'react';
+import * as S from './loginStyle'; // 이 경로가 맞는지 확인하세요
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
   const handleLogin = () => {
-    alert('로그인 로직을 구현하세요.');
+    if (email === 'test@example.com' && password === 'password123') {
+      alert('로그인 성공');
+    } else {
+      setError('잘못된 이메일 또는 비밀번호입니다.');
+    }
   };
 
   const handleKakaoLogin = () => {
@@ -11,7 +22,7 @@ const Login = () => {
   };
 
   const handleRegister = () => {
-    window.location.href = './pages/SignInPage';
+    navigate('/signup'); // 회원가입 페이지로 이동
   };
 
   return (
@@ -20,18 +31,33 @@ const Login = () => {
         <S.InnerBox>
           <h1>Welcome To Dochi API</h1>
           <S.InputGroup>
-            <S.Input type="text" placeholder="Email" />
+            <S.Input
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </S.InputGroup>
           <S.InputGroup>
-            <S.Input type="password" placeholder="Password" />
+            <S.Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </S.InputGroup>
+          {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
           <S.InputGroup>
             <S.LoginButton onClick={handleLogin}>Login</S.LoginButton>
           </S.InputGroup>
           <S.InputGroup>
             <S.HorizontalButtons>
               <S.SocialLogin>
-                <img src="/img/kakao-icon.png" alt="카카오로 로그인" onClick={handleKakaoLogin} />
+                <img
+                  src="/img/kakao-icon.png"
+                  alt="카카오로 로그인"
+                  onClick={handleKakaoLogin}
+                />
               </S.SocialLogin>
               <S.Register>
                 <S.RegisterText>계정이 없으시다면?</S.RegisterText>
