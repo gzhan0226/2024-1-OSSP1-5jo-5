@@ -94,14 +94,13 @@ const likeList = async (req, res) => {
   const query = `select * from APIs join likes
     on APIs.api_id = likes.api_id
     where likes.user_id = ?
-    order by APIs.api_id desc
+    order by likes.like_id desc
     limit ? offset ?`;
   try {
     const [totalCount] = await connection.query(countQuery, user_id);
     const totalItems = totalCount.total;
-    console.log(totalCount);
     const totalPages = Math.ceil(totalItems / pageSize);
-    const result = await connection.query(query, [user_id, pageSize]);
+    const result = await connection.query(query, [user_id, pageSize, offset]);
     return res.status(200).json({
       code: 200,
       message: "ok",
