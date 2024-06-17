@@ -1,6 +1,6 @@
 // likeApi.js
 // 좋아요 / 요청 / 취소 / 여부 확인
-// 좋아요 목록조회:apilist
+// 좋아요 목록
 
 const express = require("express");
 const router = express.Router();
@@ -47,7 +47,7 @@ const likeAPI = async (req, res) => {
       api_id,
     ]);
     if (statusCheck.length > 0)
-      return res.status(409).json({ code: 409, message: "already liked" }); //////////////////
+      return res.status(409).json({ code: 409, message: "already liked" });
     await connection.query(insertLikeQuery, [user_id, api_id]);
     await connection.query(updateAPIsQuery, api_id);
     res.status(200).json({ code: 200, message: "liked successfully" });
@@ -83,8 +83,41 @@ const unlikeAPI = async (req, res) => {
   }
 };
 
+const likeList = async (req, res) => {
+  const { user_id, page = 1 } = req.query;
+  const pageSize = 9;
+  const offset = page ? (page - 1) * pageSize : 0;
+
+  if (!user_id)
+    return res.status(400).json({ code: 400, message: "user_id is required" });
+  const countQuery = `select count(*) as total from likes where user_id = ?`;
+  const query = `select * from APIs join likes
+    on APIs.api_id = likes.api_id
+    where likes.user_id = ?
+    order by APIs.api_id desc
+    limit ? offset ?`;
+  try {
+    const [totalCount] = await connection.query(countQuery, user_id);
+    const totalItems = totalCount.total;
+    console.log(totalCount);
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const result = await connection.query(query, [user_id, pageSize]);
+    return res.status(200).json({
+      code: 200,
+      message: "ok",
+      totalItems: totalItems,
+      totalPages: totalPages,
+      result: result,
+    });
+  } catch (error) {
+    console.error("database query erro: ", error);
+    return res.status(500).json({ code: 500, message: "database query error" });
+  }
+};
+
 router.get("/", likeStatus);
 router.post("/", likeAPI);
 router.delete("/", unlikeAPI);
+router.get("/list", likeList);
 
 module.exports = router;
