@@ -56,7 +56,92 @@ const deleteUsers = (req, res) => {
   });
 };
 
+const banUsers = (req, res) => {
+  if (!req.user.admin_account) {
+    return res
+      .status(401)
+      .json({ code: 401, message: "관리자 권한이 필요합니다." });
+  }
+  const id = req.query.user_id;
+  if (!id) {
+    return res.status(400).json({ message: "user_id is required" });
+  }
+
+  let query = "DELETE FROM Users WHERE user_id = ?";
+  connection.query(query, id, (err, result) => {
+    if (err) {
+      console.error("database query error: ", err);
+      return res
+        .status(500)
+        .json({ code: 500, message: "database query error" });
+    }
+
+    res.status(200).json({
+      code: 200,
+      message: "ok",
+      result: result,
+    });
+  });
+};
+
+const promoteUsers = (req, res) => {
+  if (!req.user.admin_account) {
+    return res
+      .status(401)
+      .json({ code: 401, message: "관리자 권한이 필요합니다." });
+  }
+  const id = req.query.user_id;
+  if (!id) {
+    return res.status(400).json({ message: "user_id is required" });
+  }
+  let query = `update Users set admin_account = 1 where user_id = ?`;
+  connection.query(query, id, (err, result) => {
+    if (err) {
+      console.error("database query error: ", err);
+      return res
+        .status(500)
+        .json({ code: 500, message: "database query error" });
+    }
+
+    res.status(200).json({
+      code: 200,
+      message: "ok",
+      result: `successfully changed to User to Admin`,
+    });
+  });
+};
+
+const demoteUsers = (req, res) => {
+  if (!req.user.admin_account) {
+    return res
+      .status(401)
+      .json({ code: 401, message: "관리자 권한이 필요합니다." });
+  }
+  const id = req.query.user_id;
+  if (!id) {
+    return res.status(400).json({ message: "user_id is required" });
+  }
+  let query = `update Users set admin_account = 0 where user_id = ?`;
+  connection.query(query, id, (err, result) => {
+    if (err) {
+      console.error("database query error: ", err);
+      return res
+        .status(500)
+        .json({ code: 500, message: "database query error" });
+    }
+
+    res.status(200).json({
+      code: 200,
+      message: "ok",
+      result: `successfully changed to Admin to User`,
+    });
+  });
+};
+
 router.get("/", getUser);
-router.get("/delete", deleteUsers);
+router.delete("/delete", deleteUsers);
+router.delete("/admin/ban", banUsers);
+router.put("/admin/promote", promoteUsers);
+router.put("/admin/demote", demoteUsers);
 
 module.exports = router;

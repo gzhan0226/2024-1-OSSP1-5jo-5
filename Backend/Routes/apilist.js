@@ -42,7 +42,6 @@ const getFaviconUrl = async (baseUrl) => {
     }
     return new URL(faviconLink, baseUrl).href;
   } catch (e) {
-    console.error("Error fetching favicon:", e);
     return null;
   }
 };

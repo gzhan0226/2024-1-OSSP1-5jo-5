@@ -187,44 +187,23 @@ const deleteAPIData = async (req, res) => {
     return res.status(400).json({ code: 400, message: "api_id is required" });
 
   try {
-    const specificsQuery = `select APIspecifics_id from APIspecifics where api_id = ?`;
-    const specificsIds = await connection.query(specificsQuery, [api_id]);
-    console.log(specificsIds);
-
-    for (const endpoint of specificsIds) {
-      const endpoint_id = endpoint.APIspecifics_id;
-
-      const deleteRequestQuery = `delete from Request where endpoint_id = ?`;
-      await connection.query(deleteRequestQuery, [endpoint_id]);
-
-      const deleteRespondQuery = `delete from Respond where endpoint_id = ?`;
-      await connection.query(deleteRespondQuery, [endpoint_id]);
-    }
-    const deleteSpecificQuery = `delete from APIspecifics where api_id = ?`;
-    await connection.query(deleteSpecificQuery, [api_id]);
-
+    await connection.beginTransaction(); // 트랜잭션 시작
     const deleteAPIsQuery = `delete from APIs where api_id = ?`;
     await connection.query(deleteAPIsQuery, [api_id]);
-
+    await connection.commit(); // 트랜잭션 커밋
     res.status(200).json({ code: 200, message: "API deleted successfully" });
   } catch (error) {
     console.error("database query error: ", error);
+    await connection.rollback(); // 오류 발생 시 롤백
     res.status(500).json({ code: 500, message: "database query error" });
   }
 };
 
 router.get("/", getAPIData);
 router.post("/", insertAPIData);
-//router.post("/", updateAPIData);
 router.delete("/", deleteAPIData);
 
 module.exports = router;
-
-// todo[]
-// [v] 등록시 레벨 증가
-// [v] 조회시 조회수 증가
-// [] 수정
-// [v] 삭제
 
 /*
 {

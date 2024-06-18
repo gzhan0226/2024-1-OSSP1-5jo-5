@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import SearchBar from "../../component/common/SearchBar";
 import * as S from './readFreeStyle';
 import axios from 'axios';
@@ -16,7 +17,7 @@ const ReadFree = () => {
   const [editingReplyId, setEditingReplyId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const commentsPerPage = 5;
-  const userId = 'exampleUserId'; // 현재 사용자의 ID를 설정하세요
+  const userId = Cookies.get('user_id'); // 쿠키에서 사용자 ID를 가져옵니다.
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -88,10 +89,23 @@ const ReadFree = () => {
       return;
     }
 
-    // Implement comment submission logic here
+    try {
+      const response = await axios.post(`http://localhost:8080/api/general/comment?forum_id=1&general_id=${postId}`, {
+        user_id: userId,
+        content: newCommentContent,
+      });
 
-    setNewCommentContent('');
-    setShowCommentBox(false);
+      if (response.data.code === 201) {
+        setComments([...comments, response.data.result]);
+        setNewCommentContent('');
+        setShowCommentBox(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Comment submit error:', error);
+      alert('댓글 작성 중 오류가 발생했습니다.');
+    }
   };
 
   const toggleReplyBox = (commentId) => {
@@ -113,9 +127,27 @@ const ReadFree = () => {
       return;
     }
 
-    // Implement reply submission logic here
+    try {
+      const response = await axios.post(`http://localhost:8080/api/general/comment?forum_id=1&general_id=${postId}`, {
+        user_id: userId,
+        content,
+        parent_id: commentId,
+      });
 
-    setReplyContent({ ...replyContent, [commentId]: '' });
+      if (response.data.code === 201) {
+        setComments(comments.map(comment =>
+          comment.id === commentId
+            ? { ...comment, replies: [...comment.replies, response.data.result], showReplyBox: false }
+            : comment
+        ));
+        setReplyContent({ ...replyContent, [commentId]: '' });
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Reply submit error:', error);
+      alert('답글 작성 중 오류가 발생했습니다.');
+    }
   };
 
   const handleCommentEdit = (commentId, content) => {
