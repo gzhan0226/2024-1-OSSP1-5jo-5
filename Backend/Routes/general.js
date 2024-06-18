@@ -133,33 +133,21 @@ const deleteGeneral = (req, res) => {
   if (!general_id)
     return res.status(400).json({ code: 400, error: "general_id is required" });
 
-  const commentQuery = "delete from Generalcomment where forum_id = ?";
-  connection.query(commentQuery, [general_id], (commentErr, commentResults) => {
-    if (commentErr) {
-      console.error("database delete comment error: ", commentErr);
-      return res
-        .status(500)
-        .json({ code: 500, message: "database delete comment error" });
+  const forumQuery = "delete from Generalforum where id = ?";
+  connection.query(forumQuery, [general_id], (err, results) => {
+    if (err) {
+      console.error("database general delete query error: ", err);
+      return res.status(500).json({
+        code: 500,
+        message: "database general delete query error",
+      });
     }
+    if (results.affectedRows === 0)
+      return res.status(404).json({ code: 404, message: "general not found" });
 
-    const forumQuery = "delete from Generalforum where id = ?";
-    connection.query(forumQuery, [general_id], (err, results) => {
-      if (err) {
-        console.error("database general delete query error: ", err);
-        return res.status(500).json({
-          code: 500,
-          message: "database general delete query error",
-        });
-      }
-      if (results.affectedRows === 0)
-        return res
-          .status(404)
-          .json({ code: 404, message: "general not found" });
-
-      res
-        .status(200)
-        .json({ code: 200, message: "general deleted successfully" });
-    });
+    res
+      .status(200)
+      .json({ code: 200, message: "general deleted successfully" });
   });
 };
 

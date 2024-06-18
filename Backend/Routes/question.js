@@ -138,38 +138,23 @@ const deleteQuestion = (req, res) => {
   const question_id = req.query.question_id;
   if (!question_id)
     return res.status(400).json({ error: "question_id is required" });
-  const commentQuery = "delete from QAcomment where forum_id = ?";
-  connection.query(
-    commentQuery,
-    [question_id],
-    (commentErr, commentResults) => {
-      if (commentErr) {
-        console.error("database delete comment error: ", commentErr);
-        return res
-          .status(500)
-          .json({ code: 500, message: "database delete comment error" });
-      }
 
-      const forumQuery = "delete from QAforum where id = ?";
-      connection.query(forumQuery, [question_id], (err, results) => {
-        if (err) {
-          console.error("database question delete query error: ", err);
-          return res.status(500).json({
-            code: 500,
-            message: "database question delete query error",
-          });
-        }
-        if (results.affectedRows === 0)
-          return res
-            .status(404)
-            .json({ code: 404, message: "question not found" });
-
-        res
-          .status(200)
-          .json({ code: 200, message: "question deleted successfully" });
+  const forumQuery = "delete from QAforum where id = ?";
+  connection.query(forumQuery, [question_id], (err, results) => {
+    if (err) {
+      console.error("database question delete query error: ", err);
+      return res.status(500).json({
+        code: 500,
+        message: "database question delete query error",
       });
     }
-  );
+    if (results.affectedRows === 0)
+      return res.status(404).json({ code: 404, message: "question not found" });
+
+    res
+      .status(200)
+      .json({ code: 200, message: "question deleted successfully" });
+  });
 };
 
 router.post("/", createQuestion);
