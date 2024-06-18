@@ -114,7 +114,14 @@ export const InfoContainer = styled.div`
 export const P = styled.p`
 border-bottom: 1px solid;
 padding-bottom: 20px;
+margin-top:100px;
 `
+
+
+export const PP = styled.p`
+font-size: 20px;
+`
+
 export const Endpoint = styled.div`
   border-radius: 8px;
   width: fit-content;
@@ -130,16 +137,23 @@ export const Endpoint = styled.div`
 export const EndpointBox = styled.div`
   width: max-content;
   height: fit-content;
-  border:1px solid white;
+  border: 1px solid white;
   border-radius: 20px;
   background-color: white;
   padding: 20px 10px;
   display: flex;
-  p{
+  margin-top: 0;
+
+  p {
     margin: 5px 0px 0px 15px;
     font-size: 15px;
-    color:black;  white-space: nowrap; 
+    color: black;
+    white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  &:not(:first-child) {
+    margin-top: 30px;
   }
 `;
 
@@ -154,7 +168,8 @@ export const Method = styled.div`
   
 `;
 export const Description= styled.p`
-font-size:10px;
+font-size:20px;
+color: black; 
 `
 
 // 테이블
@@ -238,7 +253,7 @@ const statusColors = {
 
 export const getStatusColor = (type, value) => {
   if (!value) {
-    return { textColor: '#ffffff', bgColor: '#718096' }; 
+    value = "null";
   }
 
   if (type === 'required') {
