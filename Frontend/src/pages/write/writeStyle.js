@@ -6,19 +6,19 @@ export const AppContainer = styled.div`
 `;
 
 export const MainContentWrapper = styled.div`
-  width: 80%;
-  margin-left: auto;
+  width: 100%;
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #F0F4FF;
-`;
+  background-color: rgb(245, 245, 251);
+`;  
 
 export const MainContent = styled.div`
-  width: 100%;
+  width: 120%;
   padding: 20px;
-  background-color: #F0F4FF;
-  margin-left: -150px;
+  background-color: rgb(245, 245, 251 );
+  margin-left: 360px;
 `;
 
 export const Container = styled.div`

@@ -1,5 +1,4 @@
 //api나타내는 표
-
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -9,14 +8,16 @@ export const Container = styled.div`
 `;
 
 export const AboutApi = styled.div`
+  margin-top: 3%;
   background-color: white;
   width: 50vw;
-  min-height: 30vh;
+  min-height: 20vh;
   margin-left: auto;
   margin-right: auto;
   display: flex;
   padding: 10px;
   border-radius: 10px;
+  padding: 20px 20px;
 `;
 
 export const Favicon = styled.img`
@@ -35,6 +36,7 @@ export const Example = styled.button`
   display: inline-block;
   text-align: center;
   cursor: pointer;
+  width: 150px;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 `;
 
@@ -52,8 +54,8 @@ export const HeartButton = styled.button`
 `;
 
 export const GoButton = styled.button`
-  width: 250px;
-  height: 70px;
+  width: 200%;
+  height: 30%;
   background-color: #5060ff;
   border: none;
   border-radius: 30px;
@@ -66,7 +68,6 @@ export const GoButton = styled.button`
   cursor: pointer;
   text-align: center;
   transition: background-color 0.3s ease;
-
   &:hover {
     background-color: #4050d4;
   }
@@ -74,4 +75,9 @@ export const GoButton = styled.button`
   &:focus {
     outline: none;
   }
+`;
+
+export const ColDiv = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

@@ -1,6 +1,3 @@
-// allapi.js
-// api 목록 조회 / top10조회 / api 상세 조회
-
 const express = require("express");
 const router = express.Router();
 const connection = require("../Database/db");

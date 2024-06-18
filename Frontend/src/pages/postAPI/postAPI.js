@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import SearchBar from "../../component/common/SearchBar";
 import * as S from './postAPIStyle';
 
 const PostAPI = () => {
@@ -33,6 +35,7 @@ const PostAPI = () => {
 
   const [editIndex, setEditIndex] = useState(null);
   const [editType, setEditType] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -45,12 +48,12 @@ const PostAPI = () => {
   const handleRequestChange = (e) => {
     const { name, value } = e.target;
     setRequest({ ...request, [name]: value });
-  }
+  };
 
   const handleResponseChange = (e) => {
     const { name, value } = e.target;
     setResponse({ ...response, [name]: value });
-  }
+  };
 
   const addRequest = () => {
     if (editType === 'request' && editIndex !== null) {
@@ -74,7 +77,7 @@ const PostAPI = () => {
       required: '',
       description: '',
     });
-  }
+  };
 
   const addResponse = () => {
     if (editType === 'response' && editIndex !== null) {
@@ -97,7 +100,7 @@ const PostAPI = () => {
       type: '',
       description: '',
     });
-  }
+  };
 
   const handleEdit = (index, type) => {
     if (type === 'request') {
@@ -108,7 +111,7 @@ const PostAPI = () => {
       setEditType('response');
     }
     setEditIndex(index);
-  }
+  };
 
   const handleDelete = (index, type) => {
     if (type === 'request') {
@@ -126,7 +129,7 @@ const PostAPI = () => {
         responses: updatedResponses,
       });
     }
-  }
+  };
 
   const checkEmptyFields = (apiDetails) => {
     const emptyFields = [];
@@ -144,18 +147,73 @@ const PostAPI = () => {
     return emptyFields;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const emptyFields = checkEmptyFields(apiDetails);
     if (emptyFields.length > 0) {
       alert(`다음 필드를 입력해주세요: ${emptyFields.join(', ')}`);
       return;
     }
-    // API 등록 로직을 여기에 추가하십시오. 예:
-    // axios.post('/api/register', apiDetails)
-    //   .then(response => console.log(response))
-    //   .catch(error => console.error(error));
-    console.log(apiDetails);
+
+    setIsSubmitting(true); // Disable the button
+
+    // API 등록 로직
+    try {
+      const requestBody = {
+        user_id: 1, // 실제 user_id를 동적으로 할당해야 합니다.
+        name: apiDetails.name,
+        description: apiDetails.description,
+        category: apiDetails.category,
+        base_url: apiDetails.url,
+        pricepolicy: apiDetails.pricing.toLowerCase(),
+        example_code_provided: apiDetails.codeProvided === '제공',
+        endpoints: [
+          {
+            endpoint: apiDetails.endpoint,
+            method: apiDetails.method.toUpperCase(),
+            example_code: apiDetails.examplecode,
+            description: apiDetails.description,
+            request: apiDetails.requests.map(req => ({
+              parameter: req.name,
+              type: req.type,
+              required: req.required === 'yes',
+              description: req.description
+            })),
+            response: apiDetails.responses.map(res => ({
+              field: res.name,
+              type: res.type,
+              description: res.description
+            }))
+          }
+        ]
+      };
+
+      const response = await axios.post('http://localhost:8080/api/data', requestBody);
+
+      if (response.data.code === 200) {
+        alert(response.data.message);
+        setApiDetails({
+          name: '',
+          description: '',
+          category: '',
+          url: '',
+          pricing: '',
+          codeProvided: '',
+          examplecode: '',
+          endpoint: '',
+          method: '',
+          requests: [],
+          responses: [],
+        });
+      } else {
+        alert('API 등록 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('API 등록 오류:', error);
+      alert('API 등록 중 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false); // Enable the button after the request is done
+    }
   };
 
   const handleFileUpload = (e) => {
@@ -192,6 +250,7 @@ const PostAPI = () => {
   return (
     <S.AppContainer>
       <S.MainContentWrapper>
+        <SearchBar />
         <S.MainContent>
           <S.FormContainer>
             <h2>API 등록</h2>
@@ -240,11 +299,13 @@ const PostAPI = () => {
                   <label><input type="radio" name="codeProvided" value="미제공" checked={apiDetails.codeProvided === '미제공'} onChange={handleInputChange} /> 미제공</label>
                 </S.RadioGroup>
               </label>
-              <label>
-                예시코드:
-                <br />
-                <textarea name="examplecode" value={apiDetails.examplecode} onChange={handleInputChange}></textarea>
-              </label>
+              {apiDetails.codeProvided === '제공' && (
+                <label>
+                  예시코드:
+                  <br />
+                  <textarea name="examplecode" value={apiDetails.examplecode} onChange={handleInputChange}></textarea>
+                </label>
+              )}
               <label>
                 Method:
                 <S.RadioGroup>
@@ -261,67 +322,67 @@ const PostAPI = () => {
                 <input type="text" name="endpoint" value={apiDetails.endpoint} onChange={handleInputChange} />
               </label>
               <h3>API 요청 등록</h3>
-                <label>
-                  Name:
-                  <br />
-                  <input type="text" name="name" value={request.name} onChange={handleRequestChange} />
-                </label>
-                <label>
-                  Type:
-                  <br />
-                  <input type="text" name="type" value={request.type} onChange={handleRequestChange} />
-                </label>
-                <label>
-                  Required?
-                  <S.RadioGroup>
-                    <label><input type="radio" name="required" value="yes" checked={request.required === 'yes'} onChange={handleRequestChange} /> Yes</label>
-                    <label><input type="radio" name="required" value="no" checked={request.required === 'no'} onChange={handleRequestChange} /> No</label>
-                  </S.RadioGroup>
-                </label>
-                <label>
-                  설명:
-                  <br />
-                  <textarea name="description" value={request.description} onChange={handleRequestChange}></textarea>
-                </label>
-                <button type="button" onClick={addRequest}>{editType === 'request' && editIndex !== null ? '수정' : '추가'}</button>
-            <div className='request-list'>
-              <h3>등록 요청 목록</h3>
-              {apiDetails.requests.map((ep, index) => (
-                <S.Item key={index}>
-                  <span>{ep.name}</span>
-                  <button type="button" onClick={() => handleEdit(index, 'request')}>수정</button>
-                  <button type="button" onClick={() => handleDelete(index, 'request')}>삭제</button>
-                </S.Item>
-              ))}
-            </div>
+              <label>
+                Name:
+                <br />
+                <input type="text" name="name" value={request.name} onChange={handleRequestChange} />
+              </label>
+              <label>
+                Type:
+                <br />
+                <input type="text" name="type" value={request.type} onChange={handleRequestChange} />
+              </label>
+              <label>
+                Required?
+                <S.RadioGroup>
+                  <label><input type="radio" name="required" value="yes" checked={request.required === 'yes'} onChange={handleRequestChange} /> Yes</label>
+                  <label><input type="radio" name="required" value="no" checked={request.required === 'no'} onChange={handleRequestChange} /> No</label>
+                </S.RadioGroup>
+              </label>
+              <label>
+                설명:
+                <br />
+                <textarea name="description" value={request.description} onChange={handleRequestChange}></textarea>
+              </label>
+              <button type="button" onClick={addRequest}>{editType === 'request' && editIndex !== null ? '수정' : '추가'}</button>
+              <div className='request-list'>
+                <h3>등록 요청 목록</h3>
+                {apiDetails.requests.map((ep, index) => (
+                  <S.Item key={index}>
+                    <span>{ep.name}</span>
+                    <button type="button" onClick={() => handleEdit(index, 'request')}>수정</button>
+                    <button type="button" onClick={() => handleDelete(index, 'request')}>삭제</button>
+                  </S.Item>
+                ))}
+              </div>
               <h3>API 응답 등록</h3>
               <label>
-                  Name:
-                  <br />
-                  <input type="text" name="name" value={response.name} onChange={handleResponseChange} />
-                </label>
-                <label>
-                  Type:
-                  <br />
-                  <input type="text" name="type" value={response.type} onChange={handleResponseChange} />
-                </label>
-                <label>
-                  설명:
-                  <br />
-                  <textarea name="description" value={response.description} onChange={handleResponseChange}></textarea>
-                </label>
-                <button type="button" onClick={addResponse}>{editType === 'response' && editIndex !== null ? '수정' : '추가'}</button>
-            <div className='response-list'>
-              <h3>등록 응답 목록</h3>
-              {apiDetails.responses.map((ep, index) => (
-                <S.Item key={index}>
-                  <span>{ep.name}</span>
-                  <button type="button" onClick={() => handleEdit(index, 'response')}>수정</button>
-                  <button type="button" onClick={() => handleDelete(index, 'response')}>삭제</button>
-                </S.Item>
-              ))}
-            </div>
-            <S.SubmitButton className="submit-button" type="submit">등록</S.SubmitButton>
+                Name:
+                <br />
+                <input type="text" name="name" value={response.name} onChange={handleResponseChange} />
+              </label>
+              <label>
+                Type:
+                <br />
+                <input type="text" name="type" value={response.type} onChange={handleResponseChange} />
+              </label>
+              <label>
+                설명:
+                <br />
+                <textarea name="description" value={response.description} onChange={handleResponseChange}></textarea>
+              </label>
+              <button type="button" onClick={addResponse}>{editType === 'response' && editIndex !== null ? '수정' : '추가'}</button>
+              <div className='response-list'>
+                <h3>등록 응답 목록</h3>
+                {apiDetails.responses.map((ep, index) => (
+                  <S.Item key={index}>
+                    <span>{ep.name}</span>
+                    <button type="button" onClick={() => handleEdit(index, 'response')}>수정</button>
+                    <button type="button" onClick={() => handleDelete(index, 'response')}>삭제</button>
+                  </S.Item>
+                ))}
+              </div>
+              <S.SubmitButton className="submit-button" type="submit" disabled={isSubmitting}>등록</S.SubmitButton>
             </form>
           </S.FormContainer>
         </S.MainContent>

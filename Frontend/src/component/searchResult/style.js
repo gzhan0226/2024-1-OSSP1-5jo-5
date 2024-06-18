@@ -6,7 +6,7 @@ export const CardContainer = styled.div`
   border-radius: 10px;
   padding: 25px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: ${(props) => props.width || "100%"};
   background-color: white;
 `;
 

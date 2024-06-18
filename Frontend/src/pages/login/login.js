@@ -1,24 +1,34 @@
-// login.js
 import React, { useState } from 'react';
+import axios from 'axios';
 import * as S from './loginStyle'; // 이 경로가 맞는지 확인하세요
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (email === 'test@example.com' && password === 'password123') {
-      alert('로그인 성공');
-    } else {
-      setError('잘못된 이메일 또는 비밀번호입니다.');
-    }
-  };
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/login/localLogin', {
+        user_email: email,
+        user_password: password
+      });
 
-  const handleKakaoLogin = () => {
-    alert('카카오 로그인 로직을 구현하세요.');
+      if (response.data.user_id) {
+        alert('로그인 성공');
+        navigate('/'); // 로그인 성공 시 이동할 페이지
+      } else {
+        alert(response.data);
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('로그인 중 오류가 발생했습니다.');
+      }
+      console.error('Login error:', error);
+    }
   };
 
   const handleRegister = () => {
@@ -46,19 +56,11 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </S.InputGroup>
-          {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
           <S.InputGroup>
             <S.LoginButton onClick={handleLogin}>Login</S.LoginButton>
           </S.InputGroup>
           <S.InputGroup>
             <S.HorizontalButtons>
-              <S.SocialLogin>
-                <img
-                  src="/img/kakao-icon.png"
-                  alt="카카오로 로그인"
-                  onClick={handleKakaoLogin}
-                />
-              </S.SocialLogin>
               <S.Register>
                 <S.RegisterText>계정이 없으시다면?</S.RegisterText>
                 <S.RegisterLink onClick={handleRegister}>회원 가입</S.RegisterLink>

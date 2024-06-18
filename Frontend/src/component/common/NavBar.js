@@ -33,6 +33,10 @@ const NavBar = () => {
     navigate("/allresult");
   };
 
+  const myClick = () => {
+    navigate("/mypage");
+  };
+
   return (
     <NavBarContainer>
       <Logo>
@@ -68,7 +72,7 @@ const NavBar = () => {
       </MenuItemContainer>
       <UserProfile>
         <FaUserCircle size={40} />
-        <div>
+        <div onClick={myClick} style={{ cursor: "pointer" }}>
           <UserName>유저이름</UserName>
           <UserStatus>브론즈</UserStatus>
         </div>

@@ -1,100 +1,111 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import SearchBar from "../../component/common/SearchBar";
 import * as S from './readFreeStyle';
+import axios from 'axios';
 
 const ReadFree = () => {
   const { postId } = useParams();
-  const post = {
-    id: postId,
-    title: '주말에 뭐하시나요?',
-    authorId: 'author123',
-    date: '2024-06-01',
-    content: '주말에 어떤 활동을 하시나요? 추천할 만한 취미나 이벤트가 있으면 알려주세요!',
-  };
-
-  const userId = 'author123';
+  const navigate = useNavigate();
+  const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [newCommentContent, setNewCommentContent] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const commentsPerPage = 5;
-
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      authorId: 'user456',
-      date: '2024-06-02',
-      content: '저는 등산을 자주 가요. 요즘 날씨도 좋아서 추천드립니다!',
-      showReplyBox: false,
-      replies: [],
-    },
-    {
-      id: 2,
-      authorId: 'author123',
-      date: '2024-06-03',
-      content: '저는 주말마다 새로운 카페를 찾아다니는 게 취미에요. 최근에 발견한 좋은 카페를 공유할게요.',
-      showReplyBox: false,
-      replies: [],
-    },
-  ].sort((a, b) => new Date(b.date) - new Date(a.date)));
-
   const [replyContent, setReplyContent] = useState({});
   const [editingReplyId, setEditingReplyId] = useState(null);
-  const [originalReplyContent, setOriginalReplyContent] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const commentsPerPage = 5;
+  const userId = Cookies.get('user_id'); // 쿠키에서 사용자 ID를 가져옵니다.
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/general?forum_id=1&general_id=${postId}`);
+        if (response.data.code === 200) {
+          setPost(response.data.result);
+        } else {
+          console.error('Error:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    fetchPost();
+  }, [postId]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/general/comment?forum_id=1&general_id=${postId}`);
+        if (response.data.code === 200) {
+          setComments(response.data.result);
+        } else {
+          console.error('Error:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    fetchComments();
+  }, [postId]);
+
+  const handleEditPost = () => {
+    navigate('/write', { state: { post, type: 'general' } });
+  };
+
+  const handleDeletePost = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/api/general?forum_id=1&general_id=${postId}`);
+      if (response.data.code === 200) {
+        alert(response.data.message);
+        navigate('/board');
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('게시글 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  if (!post) return <div>Loading...</div>;
 
   const toggleCommentBox = () => {
     setShowCommentBox(!showCommentBox);
     setEditingCommentId(null);
-    setNewCommentContent('');
   };
 
   const handleNewCommentChange = (e) => {
     setNewCommentContent(e.target.value);
   };
 
-  const handleNewCommentSubmit = () => {
+  const handleNewCommentSubmit = async () => {
     if (newCommentContent.trim() === '') {
       alert('댓글을 입력하세요.');
       return;
     }
-    if (editingCommentId) {
-      setComments(comments.map(comment =>
-        comment.id === editingCommentId
-          ? { ...comment, content: newCommentContent }
-          : comment
-      ));
-      setEditingCommentId(null);
-    } else {
-      const newComment = {
-        id: Date.now(),
-        authorId: userId,
-        date: new Date().toISOString().split('T')[0],
+
+    try {
+      const response = await axios.post(`http://localhost:8080/api/general/comment?forum_id=1&general_id=${postId}`, {
+        user_id: userId,
         content: newCommentContent,
-        showReplyBox: false,
-        replies: [],
-      };
-      setComments([newComment, ...comments]);
+      });
+
+      if (response.data.code === 201) {
+        setComments([...comments, response.data.result]);
+        setNewCommentContent('');
+        setShowCommentBox(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Comment submit error:', error);
+      alert('댓글 작성 중 오류가 발생했습니다.');
     }
-    setNewCommentContent('');
-    setShowCommentBox(false);
-  };
-
-  const handleEditPost = () => {
-    alert('기능 구현 예정: 글 수정');
-  };
-
-  const handleDeletePost = () => {
-    alert('기능 구현 예정: 글 삭제');
-  };
-
-  const handleCommentDelete = (commentId) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-  };
-
-  const handleCommentEdit = (commentId, content) => {
-    setEditingCommentId(commentId);
-    setNewCommentContent(content);
-    setShowCommentBox(false);
   };
 
   const toggleReplyBox = (commentId) => {
@@ -109,71 +120,95 @@ const ReadFree = () => {
     setReplyContent({ ...replyContent, [commentId]: content });
   };
 
-  const handleReplySubmit = (commentId) => {
+  const handleReplySubmit = async (commentId) => {
     const content = replyContent[commentId]?.trim();
     if (!content) {
       alert('답글을 입력하세요.');
       return;
     }
-    if (editingReplyId) {
-      setComments(comments.map(comment =>
-        comment.id === commentId
-          ? {
-            ...comment,
-            replies: comment.replies.map(reply =>
-              reply.id === editingReplyId
-                ? { ...reply, content: content }
-                : reply
-            )
-          }
-          : comment
-      ));
-      setEditingReplyId(null);
-    } else {
-      setComments(comments.map(comment =>
-        comment.id === commentId
-          ? {
-            ...comment,
-            replies: [{ id: Date.now(), authorId: userId, content: content, date: new Date().toISOString().split('T')[0] }, ...comment.replies],
-            showReplyBox: false,
-          }
-          : comment
-      ));
+
+    try {
+      const response = await axios.post(`http://localhost:8080/api/general/comment?forum_id=1&general_id=${postId}`, {
+        user_id: userId,
+        content,
+        parent_id: commentId,
+      });
+
+      if (response.data.code === 201) {
+        setComments(comments.map(comment =>
+          comment.id === commentId
+            ? { ...comment, replies: [...comment.replies, response.data.result], showReplyBox: false }
+            : comment
+        ));
+        setReplyContent({ ...replyContent, [commentId]: '' });
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Reply submit error:', error);
+      alert('답글 작성 중 오류가 발생했습니다.');
     }
-    setReplyContent({ ...replyContent, [commentId]: '' });
   };
 
-  const handleReplyDelete = (commentId, replyId) => {
-    setComments(comments.map(comment =>
-      comment.id === commentId
-        ? {
-          ...comment,
-          replies: comment.replies.filter(reply => reply.id !== replyId),
-        }
-        : comment
-    ));
+  const handleCommentEdit = (commentId, content) => {
+    setEditingCommentId(commentId);
+    setNewCommentContent(content);
+    setShowCommentBox(true);
   };
 
-  const handleReplyEdit = (commentId, reply) => {
-    setEditingReplyId(reply.id);
-    setReplyContent({ ...replyContent, [commentId]: reply.content });
-    setOriginalReplyContent({ ...originalReplyContent, [reply.id]: reply.content });
+  const handleCommentUpdate = async () => {
+    if (newCommentContent.trim() === '') {
+      alert('댓글을 입력하세요.');
+      return;
+    }
+
+    try {
+      const response = await axios.put(`http://localhost:8080/api/general/comment?comment_id=${editingCommentId}`, {
+        content: newCommentContent,
+      });
+
+      if (response.data.code === 200) {
+        setComments(comments.map(comment =>
+          comment.id === editingCommentId ? { ...comment, content: newCommentContent } : comment
+        ));
+        setEditingCommentId(null);
+        setNewCommentContent('');
+        setShowCommentBox(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      alert('댓글 수정 중 오류가 발생했습니다.');
+    }
   };
 
-  const handleCancelReplyEdit = (commentId, replyId) => {
-    setEditingReplyId(null);
-    setReplyContent({ ...replyContent, [commentId]: '' });
+  const handleCommentDelete = async (commentId) => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/api/general/comment?comment_id=${commentId}`);
+      if (response.data.code === 200) {
+        setComments(comments.filter(comment => comment.id !== commentId));
+        alert(response.data.message);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('댓글 삭제 중 오류가 발생했습니다.');
+    }
   };
 
-  // Pagination logic for comments
-  const indexOfLastComment = currentPage * commentsPerPage;
-  const indexOfFirstComment = indexOfLastComment - commentsPerPage;
-  const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
+  const currentComments = comments.slice(
+    (currentPage - 1) * commentsPerPage,
+    currentPage * commentsPerPage
+  );
+
   const totalCommentPages = Math.ceil(comments.length / commentsPerPage);
 
   return (
     <S.AppContainer>
       <S.MainContentWrapper>
+        <SearchBar />
         <S.MainContent>
           <S.PostContainer>
             <S.PostTitleBox>
@@ -199,7 +234,7 @@ const ReadFree = () => {
                 <h3>댓글</h3>
                 <button onClick={toggleCommentBox}>댓글 쓰기</button>
               </S.CommentsHeader>
-              {showCommentBox && !editingCommentId && (
+              {showCommentBox && (
                 <S.CommentBox>
                   <textarea
                     placeholder="댓글을 입력하세요"
@@ -221,7 +256,7 @@ const ReadFree = () => {
                         value={newCommentContent}
                         onChange={handleNewCommentChange}
                       />
-                      <button onClick={handleNewCommentSubmit}>수정</button>
+                      <button onClick={handleCommentUpdate}>수정</button>
                     </S.CommentBox>
                   ) : (
                     <>
@@ -258,15 +293,14 @@ const ReadFree = () => {
                                 onChange={(e) => handleReplyChange(comment.id, e.target.value)}
                               />
                               <button onClick={() => handleReplySubmit(comment.id)}>수정</button>
-                              <button onClick={() => handleCancelReplyEdit(comment.id, reply.id)}>취소</button>
                             </S.ReplyBox>
                           ) : (
                             <>
                               <p>{reply.content}</p>
                               {userId === reply.authorId && (
                                 <S.ReplyActions>
-                                  <button onClick={() => handleReplyEdit(comment.id, reply)}>수정</button>
-                                  <button onClick={() => handleReplyDelete(comment.id, reply.id)}>삭제</button>
+                                  <button>수정</button>
+                                  <button>삭제</button>
                                 </S.ReplyActions>
                               )}
                             </>

@@ -42,13 +42,12 @@ const getFaviconUrl = async (baseUrl) => {
     }
     return new URL(faviconLink, baseUrl).href;
   } catch (e) {
-    console.error("Error fetching favicon:", e);
     return null;
   }
 };
 
 const getList = async (req, res) => {
-  const { categoryId, page = 1, sort = "newest" } = req.query;
+  const { user_id, categoryId, page = 1, sort = "newest" } = req.query;
   const pageSize = 9;
   const offset = page ? (page - 1) * pageSize : 0;
 
@@ -57,6 +56,10 @@ const getList = async (req, res) => {
   if (categoryId) {
     conditions.push("category = ?");
     queryParams.push(Categories[categoryId]);
+  }
+  if (user_id) {
+    conditions.push("user_id = ?");
+    queryParams.push(user_id);
   }
   let countQuery = `select count(*) as total from APIs`;
   let query = `select * from APIs`;
@@ -167,7 +170,7 @@ const search = async (req, res) => {
       message: "ok",
       totalItems: totalItems,
       totalPages: totalPages,
-      results: results,
+      result: results,
     });
   } catch (error) {
     console.error("database query error: ", error);

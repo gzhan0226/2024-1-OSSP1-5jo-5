@@ -2,17 +2,13 @@
 import React from "react";
 import * as S from "./style";
 
-const ApiCard = ({ icon, views, title, description }) => {
+const ApiCard = ({ icon, views, title, description, width }) => {
   return (
-    <S.CardContainer>
+    <S.CardContainer width={width}>
       <S.CardIcon>
         <img src={icon} alt="Icon" />
       </S.CardIcon>
-<<<<<<< HEAD
-      <S.CardBookmark>
-=======
       {/* <S.CardBookmark>
->>>>>>> 565e57d2a5d468124ad0a2114bb36d6751f9a475
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -27,11 +23,7 @@ const ApiCard = ({ icon, views, title, description }) => {
         >
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
         </svg>
-<<<<<<< HEAD
-      </S.CardBookmark>
-=======
-      </S.CardBookmark> */}
->>>>>>> 565e57d2a5d468124ad0a2114bb36d6751f9a475
+      </S.CardBookmark>*/}
       <S.CardViews>
         <svg
           xmlns="http://www.w3.org/2000/svg"
