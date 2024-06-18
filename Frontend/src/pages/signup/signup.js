@@ -29,7 +29,6 @@ const SignUp = () => {
         user_password_confirm: passwordConfirm
       });
 
-      // Check if response data exists
       if (response.data) {
         alert(response.data.message);
 

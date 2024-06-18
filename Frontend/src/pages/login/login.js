@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import * as S from './loginStyle';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../component/user/UserContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext); // Use useContext to access setUser
 
   const handleLogin = async () => {
     try {
       const response = await axios.post('http://localhost:8080/api/login/localLogin', {
         user_email: email,
-        user_password: password
+        user_password: password,
       });
 
       if (response.data.user_id) {
@@ -21,8 +23,9 @@ const Login = () => {
         Cookies.set('user_name', response.data.user_name, { expires: 7 });
         Cookies.set('user_email', response.data.user_email, { expires: 7 });
         Cookies.set('levelpoint', response.data.levelpoint, { expires: 7 });
+        // setUser(response.data);
         alert('로그인 성공');
-        navigate('/'); 
+        navigate('/');
       } else {
         alert(response.data);
       }
@@ -41,7 +44,7 @@ const Login = () => {
   };
 
   const handleStartNow = () => {
-    navigate('/signup'); 
+    navigate('/signup');
   };
 
   return (

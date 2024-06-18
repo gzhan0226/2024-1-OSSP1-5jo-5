@@ -19,6 +19,12 @@ const ReadFree = () => {
   const Admin_account = Cookies.get('Admin_account');
 
   useEffect(() => {
+    if (!userId) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
+
     const fetchPost = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/api/general?forum_id=1&general_id=${postId}`);
@@ -33,7 +39,7 @@ const ReadFree = () => {
     };
 
     fetchPost();
-  }, [postId]);
+  }, [postId, userId, navigate]);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -117,7 +123,7 @@ const ReadFree = () => {
   const handleCommentEdit = (commentId, content) => {
     setEditingCommentId(commentId);
     setNewCommentContent(content);
-    setShowCommentBox(false);  // Hide the new comment box when editing a comment
+    setShowCommentBox(false);
   };
 
   const handleCommentUpdate = async () => {
@@ -196,7 +202,7 @@ const ReadFree = () => {
             <S.PostContentBox>
               <p>{post.content}</p>
             </S.PostContentBox>
-            {(userId === post.user_id || Admin_account === 1) && (
+            {(userId === post.user_id || Admin_account === '1') && (
               <S.PostActions>
                 <button onClick={handleEditPost}>수정</button>
                 <button onClick={handleDeletePost}>삭제</button>
@@ -239,7 +245,7 @@ const ReadFree = () => {
                     ) : (
                       <>
                         <p>{validatedComment.content}</p>
-                        {(userId === validatedComment.user_id || Admin_account === 1) && (
+                        {(userId === validatedComment.user_id || Admin_account === '1') && (
                           <S.CommentActions>
                             <button onClick={() => handleCommentEdit(validatedComment.id, validatedComment.content)}>수정</button>
                             <button onClick={() => handleCommentDelete(validatedComment.id)}>삭제</button>
