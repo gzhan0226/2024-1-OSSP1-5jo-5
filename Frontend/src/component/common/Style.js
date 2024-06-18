@@ -130,12 +130,12 @@ export const SearchInput = styled.input`
 
 export const SearchButton = styled.button`
   height: 100%;
-  background-color: #5865f2;
+  /* background-color: #5865f2;
   padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  border: none; */
 `;
 
 export const Icon = styled(FaSearch)`

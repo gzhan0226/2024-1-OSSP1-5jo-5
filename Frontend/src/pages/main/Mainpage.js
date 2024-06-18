@@ -24,10 +24,10 @@ const MainPage = () => {
           row="좋아요 수"
         />
       </S.TableWrapper>
-      <S.TableWrapper>
+      <S.TableWrapper2>
         <PostBoard />
         <PostBoard />
-      </S.TableWrapper>
+      </S.TableWrapper2>
     </S.MainWrapper>
   );
 };

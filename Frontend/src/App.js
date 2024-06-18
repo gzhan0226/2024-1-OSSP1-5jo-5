@@ -14,6 +14,7 @@ import ReadFree from "./pages/readfree/readFree";
 import ReadQnA from "./pages/readqna/readQnA";
 import Board from "./pages/board/board";
 import MyPagePost from "./pages/mypage/mypagePost";
+import InputResultPage from "../src/pages/searchResult/InputResultPage"
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
             <Route path="/readFree/:postId" element={<ReadFree />} />
             <Route path="/readQnA/:postId" element={<ReadQnA />} />
             <Route path="/mypage/postdetail" element={<MyPagePost />} />
+            <Route path="/search-results" element={<InputResultPage />} />
           </Routes>
         </div>
       </div>
