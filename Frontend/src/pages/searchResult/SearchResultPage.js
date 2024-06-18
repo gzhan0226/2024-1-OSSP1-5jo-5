@@ -12,8 +12,7 @@ const SearchResultPage = () => {
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 추가
   const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 추가
 
-  const endpoint =
-    location.state?.endpoint || "https://3.38.78.74:8080/api/list";
+  const endpoint = location.state?.endpoint || "http://localhost:8080/api/list";
   const resultMessage =
     location.state?.resultMessage || "전체 API를 검색한 결과";
 
