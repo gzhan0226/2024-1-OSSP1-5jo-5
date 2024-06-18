@@ -6,7 +6,7 @@ const connection = require("./Database/db");
 
 const session = require("express-session");
 const passport = require("passport");
-const passportConfig = require("./passport");
+const passportConfig = require("./Passport");
 
 const app = express();
 app.use(bodyParser.json());
