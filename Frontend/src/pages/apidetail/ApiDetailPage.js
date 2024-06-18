@@ -13,7 +13,23 @@ const ApiDetailPage = () => {
   const [selected, setSelected] = useState(null);
 
   const toggleLike = () => {
-    setIsLiked(!isLiked);
+    const newIsLiked = !isLiked;
+    setIsLiked(newIsLiked);
+    
+    const requestOptions = {
+      method: newIsLiked ? 'POST' : 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: 1, api_id: parseInt(id) })
+    };
+
+    fetch(`http://localhost:8080/api/like`, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log("Like status changed:", data);
+      })
+      .catch(error => {
+        console.error("Error updating like status:", error);
+      });
   };
 
   const handleGoButtonClick = () => {
@@ -21,6 +37,7 @@ const ApiDetailPage = () => {
   };
 
   useEffect(() => {
+    // Fetch API details
     fetch(`http://localhost:8080/api/data?api_id=${id}`)
       .then(response => response.json())
       .then(data => {
@@ -30,48 +47,58 @@ const ApiDetailPage = () => {
         console.error("Error fetching API details:", error);
         setApiDetail(null);
       });
+
+    // Fetch like list
+    fetch(`http://localhost:8080/api/like/list?user_id=1`)
+      .then(response => response.json())
+      .then(data => {
+        const likedApi = data.result.find(item => item.api_id === parseInt(id));
+        if (likedApi) {
+          setIsLiked(true);
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching like list:", error);
+      });
   }, [id]);
 
   const handleEndpointClick = (endpoint) => {
     setSelected(endpoint);
   };
 
-    const renderTable = (data, includeRequired = false) => (
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>변수 이름</Th>
-            <Th>설명</Th>
-            {includeRequired && <Th>필수 여부</Th>}
-            <Th>타입</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.sort((a, b) => includeRequired ? b.required - a.required : 0)
-            .map((item, index) => (
-              <Tr key={index}>
-                <Td>{item.name}</Td>
-                <Td>{item.description}</Td>
-                {includeRequired && (
-                  <Td>
-                    <S.RequiredTag required={item.required}>
-                      {item.required ? "필수" : "선택"}
-                    </S.RequiredTag>
-                  </Td>
-                )}
+  const renderTable = (data, includeRequired = false) => (
+    <Table>
+      <Thead>
+        <Tr>
+          <Th>변수 이름</Th>
+          <Th>설명</Th>
+          {includeRequired && <Th>필수 여부</Th>}
+          <Th>타입</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data.sort((a, b) => includeRequired ? b.required - a.required : 0)
+          .map((item, index) => (
+            <Tr key={index}>
+              <Td>{item.name}</Td>
+              <Td>{item.description}</Td>
+              {includeRequired && (
                 <Td>
-                  <S.StatusTag {...S.getStatusColor('type', item.type)}>
-                    {item.type}
-                  </S.StatusTag>
+                  <S.RequiredTag required={item.required}>
+                    {item.required ? "필수" : "선택"}
+                  </S.RequiredTag>
                 </Td>
-              </Tr>
-            ))}
-        </Tbody>
-      </Table>
-    );
-    
-  
-  
+              )}
+              <Td>
+                <S.StatusTag {...S.getStatusColor('type', item.type)}>
+                  {item.type}
+                </S.StatusTag>
+              </Td>
+            </Tr>
+          ))}
+      </Tbody>
+    </Table>
+  );
 
   if (!apiDetail) {
     return <div>Loading...</div>;
@@ -96,29 +123,28 @@ const ApiDetailPage = () => {
         <S.ColDiv>
           <S.HeartButton onClick={toggleLike} isLiked={isLiked}>
             {isLiked ? "❤️" : "🤍"}
-            
           </S.HeartButton>
-          <p><svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="feather feather-eye"
-        >
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
-          </svg>       {apiDetail.view} Views</p>
-          
+          <p>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="feather feather-eye"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            {apiDetail.view} Views
+          </p>
           <S.GoButton onClick={handleGoButtonClick}>URL 이동</S.GoButton>
         </S.ColDiv>
       </S.AboutApi>
-
-
       <S.InfoContainer>
         <S.Endpoint>
           <S.P>ENDPOINT 목록</S.P>
@@ -134,7 +160,6 @@ const ApiDetailPage = () => {
               <S.Description>{selected.description}</S.Description>
               {renderTable(selected.requests, true)}
               {renderTable(selected.responses)}
-              
             </>
           )}
         </S.Endpoint>
