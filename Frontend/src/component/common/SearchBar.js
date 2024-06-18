@@ -18,11 +18,18 @@ const SearchBar = ({ isDetailActive }) => {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/list/search`,
-        { params: { search: searchTerm } }
+        { search: searchTerm }
       );
-      navigate("/search-results", { state: { apiData: response.data } });
+      const result = response.data.result;
+      navigate("/category-result", { state: { result, resultMessage: `${searchTerm} 검색 결과입니다.` } });
     } catch (error) {
       console.error("검색 중 오류 발생:", error);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -33,6 +40,7 @@ const SearchBar = ({ isDetailActive }) => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={handleKeyPress}
           placeholder="검색하고자하는 API를 입력해보세요!"
         />
         <SearchButton onClick={handleSearch}>
