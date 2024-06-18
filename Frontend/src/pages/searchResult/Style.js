@@ -118,3 +118,34 @@ export const SubTitle = styled.p`
   font-size: 20px;
   margin-bottom: 0;
 `;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+export const PaginationItem = styled.li`
+  list-style-type: none;
+  margin: 0 5px;
+
+  .PageLink {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+
+    &.active {
+      background-color: #007bff;
+      color: #fff;
+      border-color: #007bff;
+    }
+  }
+`;

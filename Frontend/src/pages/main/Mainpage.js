@@ -16,7 +16,7 @@ const MainPage = () => {
       </S.BannerWrapper>
       <S.TableWrapper>
         <Table
-          url="http://localhost:8080/api/list/top?type=likes"
+          url="http://3.38.78.74:8080/api/list/top?type=likes"
           row="좋아요 수"
         />
         <Table
