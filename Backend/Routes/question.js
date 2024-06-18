@@ -28,34 +28,21 @@ const createQuestion = (req, res) => {
     if (apiResults.length === 0) {
       return res.status(400).json({ code: 400, message: "Invalid api_id" });
     }
-
-    const userQuery = "select * from Users where user_id = ?";
-    connection.query(userQuery, [user_id], (userErr, userResults) => {
-      if (userErr) {
-        console.error("database user query error: ", userErr);
-        return res
-          .status(500)
-          .json({ code: 500, message: "database user query error" });
-      }
-      if (userResults.length === 0)
-        return res.status(400).json({ code: 400, message: "Invalid user_id" });
-
-      const QAforumQuery =
-        "insert into QAforum (api_id, user_id, title, content) values (?, ?, ?, ?)";
-      connection.query(
-        QAforumQuery,
-        [api_id, user_id, title, content],
-        (err, result) => {
-          if (err) {
-            console.error("database query error: ", err);
-            return res.status(500).json({ error: "database query error" });
-          }
-          res
-            .status(201)
-            .json({ code: 201, message: "question created successfully" });
+    const QAforumQuery =
+      "insert into QAforum (api_id, user_id, title, content) values (?, ?, ?, ?)";
+    connection.query(
+      QAforumQuery,
+      [api_id, user_id, title, content],
+      (err, result) => {
+        if (err) {
+          console.error("database query error: ", err);
+          return res.status(500).json({ error: "database query error" });
         }
-      );
-    });
+        res
+          .status(201)
+          .json({ code: 201, message: "question created successfully" });
+      }
+    );
   });
 };
 
