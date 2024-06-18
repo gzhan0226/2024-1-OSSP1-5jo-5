@@ -111,7 +111,7 @@ const getTopList = (req, res) => {
 
   const query = `
         select * from APIs
-        order by ${show}, api_id desc
+        order by ${show} DESC
         limit 5`;
   connection.query(query, (err, results) => {
     if (err) {
