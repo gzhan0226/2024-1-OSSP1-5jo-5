@@ -11,6 +11,7 @@ const ApiDetailPage = () => {
   const [apiDetail, setApiDetail] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [questions, setQuestions] = useState([]);
 
   const toggleLike = () => {
     const newIsLiked = !isLiked;
@@ -60,6 +61,17 @@ const ApiDetailPage = () => {
       .catch(error => {
         console.error("Error fetching like list:", error);
       });
+
+    // Fetch questions
+    fetch(`http://localhost:8080/api/forums?type=question&api_id=${id}`)
+      .then(response => response.json())
+      .then(data => {
+        const questionTitles = data.result.slice(0, 3).map(question => question.title);
+        setQuestions(questionTitles);
+      })
+      .catch(error => {
+        console.error("Error fetching questions:", error);
+      });
   }, [id]);
 
   const handleEndpointClick = (endpoint) => {
@@ -90,8 +102,8 @@ const ApiDetailPage = () => {
                 </Td>
               )}
               <Td>
-                <S.StatusTag {...S.getStatusColor('type', item.type)}>
-                  {item.type}
+                <S.StatusTag {...S.getStatusColor('type', item.type || "null")}>
+                  {item.type || "null"}
                 </S.StatusTag>
               </Td>
             </Tr>
@@ -147,21 +159,40 @@ const ApiDetailPage = () => {
       </S.AboutApi>
       <S.InfoContainer>
         <S.Endpoint>
-          <S.P>ENDPOINT 목록</S.P>
-          {apiDetail.endpoints.map((endpoint, index) => (
-            <S.EndpointBox key={index} onClick={() => handleEndpointClick(endpoint)}>
-              <S.Method>{endpoint.method}</S.Method>
-              <p>{endpoint.endpoint}</p>
-            </S.EndpointBox>
-          ))}
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
+              <S.P>ENDPOINT 목록</S.P>
+              {apiDetail.endpoints.map((endpoint, index) => (
+                <S.EndpointBox key={index} onClick={() => handleEndpointClick(endpoint)}>
+                  <S.Method>{endpoint.method}</S.Method>
+                  <p>{endpoint.endpoint}</p>
+                </S.EndpointBox>
+              ))}
+            </div>
+            {selected && (
+              <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px' }}>
+                <S.P>클릭한 ENDPOINT에 대한 설명</S.P>
+                <S.Description>{selected.description}</S.Description>
+              </div>
+            )}
+          </div>
+          <p style={{color:`black`,fontWeight:`400`, fontSize:`15px`, marginTop:`20px`}}>※ 궁금한 endpoint를 클릭하세요</p>
           {selected && (
             <>
-              <S.P>클릭한 ENDPOINT에 대한 설명</S.P>
-              <S.Description>{selected.description}</S.Description>
+              <S.P>REQUEST변수</S.P>
               {renderTable(selected.requests, true)}
+              <S.P>RESPONSE 변수</S.P>
               {renderTable(selected.responses)}
             </>
           )}
+
+          <S.P>해당 API에 달린 질문들 </S.P>
+          <ul>
+            {questions.map((question, index) => (
+              <li key={index}>{question}</li>
+            ))}
+          </ul>
+
         </S.Endpoint>
       </S.InfoContainer>
     </Container>

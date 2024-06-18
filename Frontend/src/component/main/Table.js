@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StyledTable, Th, Td, TdFavi } from "./Style";
 
@@ -6,7 +7,8 @@ const Table = ({ url, row }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const defaultFavicon = "/img/hedgehog.png"; // 기본 이미지 URL을 여기에 설정하세요
+  const navigate = useNavigate();
+  const defaultFavicon = "/img/hedgehog.png"; 
 
   useEffect(() => {
     axios
@@ -43,6 +45,10 @@ const Table = ({ url, row }) => {
     );
   }
 
+  const handleRowClick = (id) => {
+    navigate(`/api-details/${id}`);
+  };
+
   return (
     <StyledTable>
       <thead>
@@ -57,7 +63,7 @@ const Table = ({ url, row }) => {
       <tbody>
         {data.length > 0 ? (
           data.map((item) => (
-            <tr key={item.api_id}>
+            <tr key={item.api_id} onClick={() => handleRowClick(item.api_id)}>
               <TdFavi
                 src={item.favicon || defaultFavicon}
                 alt={`${item.name} favicon`}

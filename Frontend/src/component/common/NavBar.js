@@ -93,7 +93,7 @@ const NavBar = () => {
 
   return (
     <NavBarContainer>
-      <Logo>
+      <Logo onClick={homeClick}>
         <TitleDochi>도치</TitleDochi>
         <TitleApis>APIS</TitleApis>
         <LogoIcon src="/img/dochi.png" alt="Dochi" />
@@ -117,12 +117,12 @@ const NavBar = () => {
           </MenuIcon>
           <span>Q&A</span>
         </MenuItem>
-        <MenuItem>
+        {/* <MenuItem>
           <MenuIcon>
             <FaInfoCircle />
           </MenuIcon>
           <span>사이트 소개</span>
-        </MenuItem>
+        </MenuItem> */}
       </MenuItemContainer>
       <UserProfile>
         <FaUserCircle size={40} />

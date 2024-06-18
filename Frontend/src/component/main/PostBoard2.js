@@ -11,7 +11,7 @@ const PostBoard2 = ({ url }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/forums/top?type=question")
+      .get("http://localhost:8080/api/forums/top?type=general")
       .then((response) => {
         setData(response.data.result);
         setLoading(false);
@@ -36,12 +36,12 @@ const PostBoard2 = ({ url }) => {
   }
 
   const handleCardClick = (postId) => {
-    navigate(`/readQnA/${postId}`);
+    navigate(`/readFree/${postId}`);
   };
 
   return (
     <BoardContainer>
-      <Header>Q&A 게시판</Header>
+      <Header>일반 게시판</Header>
       <Board>
         {data.length > 0 ? (
           data.map((item, index) => (

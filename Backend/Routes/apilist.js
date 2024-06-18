@@ -113,6 +113,7 @@ const getTopList = (req, res) => {
         select * from APIs
         order by ${show} DESC
         limit 5`;
+
   connection.query(query, (err, results) => {
     if (err) {
       console.error("database query error: ", err);
