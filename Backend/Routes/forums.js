@@ -69,7 +69,6 @@ const getTopForums = (req, res) => {
 
   const query = `
         select * from ${table}
-        where creation_date >= now() - interval 3 day
         order by view desc, id desc
         limit 10`;
   connection.query(query, (err, results) => {
