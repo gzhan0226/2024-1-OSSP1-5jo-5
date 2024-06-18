@@ -207,7 +207,7 @@ export const Pagination = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 5%;
 
   button {
     margin: 0 10px;
