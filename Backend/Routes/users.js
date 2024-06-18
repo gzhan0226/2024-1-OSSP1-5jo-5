@@ -3,11 +3,10 @@ const router = express.Router();
 const connection = require("../Database/db");
 
 const getUser = async (req, res) => {
-  // if (!req.user) {
-  //   return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  // }
-  const user_email = req.query.user_email;
-  // const user_email = req.user.user_email;
+  if (!req.user) {
+    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
+  }
+  const user_email = req.user.user_email;
   let query = `
         SELECT * FROM Users WHERE user_email = ?`;
   connection.query(query, [user_email], (err, result) => {
