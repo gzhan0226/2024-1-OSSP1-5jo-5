@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import SearchBar from "../../component/common/SearchBar";
 import * as S from './boardStyle';
 import axios from 'axios';
@@ -10,8 +11,8 @@ const Board = () => {
   const [activeTab, setActiveTab] = useState('freeBoard');
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
-  const postsPerPage = 10; // 페이지당 게시글 수
   const [totalPages, setTotalPages] = useState(1);
+  const userId = Cookies.get('user_id');
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -24,11 +25,9 @@ const Board = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       const type = activeTab === 'freeBoard' ? 'general' : 'question';
-      const user_id = null; // 필요한 경우 유저 ID를 설정하세요
-      const api_id = null; // 필요한 경우 API ID를 설정하세요
+      const api_id = null;
 
       let url = `http://localhost:8080/api/forums?type=${type}&page=${currentPage}`;
-      if (user_id) url += `&user_id=${user_id}`;
       if (type === 'question' && api_id) url += `&api_id=${api_id}`;
 
       try {

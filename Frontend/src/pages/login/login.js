@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import * as S from './loginStyle'; // 이 경로가 맞는지 확인하세요
+import Cookies from 'js-cookie';
+import * as S from './loginStyle';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -10,14 +11,18 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/login/localLogin', {
+      const response = await axios.post('http://localhost:8080/api/login/localLogin', {
         user_email: email,
         user_password: password
       });
 
       if (response.data.user_id) {
+        Cookies.set('user_id', response.data.user_id, { expires: 7 });
+        Cookies.set('user_name', response.data.user_name, { expires: 7 });
+        Cookies.set('user_email', response.data.user_email, { expires: 7 });
+        Cookies.set('levelpoint', response.data.levelpoint, { expires: 7 });
         alert('로그인 성공');
-        navigate('/'); // 로그인 성공 시 이동할 페이지
+        navigate('/'); 
       } else {
         alert(response.data);
       }
@@ -32,7 +37,11 @@ const Login = () => {
   };
 
   const handleRegister = () => {
-    navigate('/signup'); // 회원가입 페이지로 이동
+    navigate('/signup');
+  };
+
+  const handleStartNow = () => {
+    navigate('/signup'); 
   };
 
   return (
@@ -74,7 +83,7 @@ const Login = () => {
           <S.Title>Experience Whole New World</S.Title>
           <S.Subtitle>All in One API</S.Subtitle>
           <S.Text>Dochi API</S.Text>
-          <S.StartButton>Start Now</S.StartButton>
+          <S.StartButton onClick={handleStartNow}>Start Now</S.StartButton>
         </S.Box>
       </S.Right>
     </S.Container>

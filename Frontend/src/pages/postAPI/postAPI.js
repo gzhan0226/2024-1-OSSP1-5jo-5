@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import SearchBar from "../../component/common/SearchBar";
 import * as S from './postAPIStyle';
 
 const PostAPI = () => {
   const categories = ["AI", "IT", "SNS", "건강", "게임", "과학", "교육", "교통", "금융", "날씨", "뉴스 & 미디어", "부동산", "비디오 & 이미지", "쇼핑", "스포츠", "식음료", "에너지", "여행", "예술 & 엔터테인먼트", "기타"];
+  const userId = 1;
+  // const userId = Cookies.get('user_id');
 
   const [apiDetails, setApiDetails] = useState({
     name: '',
@@ -154,9 +157,9 @@ const PostAPI = () => {
       alert(`다음 필드를 입력해주세요: ${emptyFields.join(', ')}`);
       return;
     }
-
+  
     setIsSubmitting(true); // Disable the button
-
+  
     // API 등록 로직
     try {
       const requestBody = {
@@ -164,8 +167,8 @@ const PostAPI = () => {
         name: apiDetails.name,
         description: apiDetails.description,
         category: apiDetails.category,
-        base_url: apiDetails.url,
-        pricepolicy: apiDetails.pricing.toLowerCase(),
+        service_url: apiDetails.url,
+        price: apiDetails.pricing.toLowerCase(),
         example_code_provided: apiDetails.codeProvided === '제공',
         endpoints: [
           {
@@ -187,9 +190,15 @@ const PostAPI = () => {
           }
         ]
       };
-
-      const response = await axios.post('http://localhost:8080/api/data', requestBody);
-
+  
+      console.log("Request Body: ", requestBody); // 요청 본문을 콘솔에 출력하여 확인
+  
+      const response = await axios.post('http://localhost:8080/api/data', requestBody, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
       if (response.data.code === 200) {
         alert(response.data.message);
         setApiDetails({
@@ -215,6 +224,7 @@ const PostAPI = () => {
       setIsSubmitting(false); // Enable the button after the request is done
     }
   };
+    
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -222,23 +232,28 @@ const PostAPI = () => {
     reader.onload = (event) => {
       try {
         const json = JSON.parse(event.target.result);
-        // 여기에 필요한 데이터를 json에서 추출하여 apiDetails에 채워 넣는 로직을 추가하십시오.
         setApiDetails({
           ...apiDetails,
-          name: json.info.title || '',
-          description: json.info.description || '',
-          url: json.servers && json.servers.length > 0 ? json.servers[0].url : '',
-          requests: json.paths ? Object.keys(json.paths).map(path => ({ 
-            name: path,
-            type: 'path',
-            required: 'yes',
-            description: json.paths[path].description || ''
+          name: json.apis[0].name || '',
+          description: json.apis[0].description || '',
+          url: json.apis[0].service_url || '',
+          endpoint: json.apis[0].base_url || '',
+          method: json.apis[0].method || '',
+          category: json.apis[0].category || '',
+          pricing: json.apis[0].price || '',
+          codeProvided: json.apis[0].example_code_provided ? '제공' : '미제공',
+          examplecode: json.apis[0].examplecode || '',
+          requests: json.apis[0].request ? json.apis[0].request.map(req => ({
+            name: req.parameter,
+            type: req.type,
+            required: req.required ? 'yes' : 'no',
+            description: req.description
           })) : [],
-          responses: json.paths ? Object.keys(json.paths).flatMap(path => Object.keys(json.paths[path]).map(method => ({
-            name: `${method.toUpperCase()} ${path}`,
-            type: 'response',
-            description: json.paths[path][method].responses['200'] ? json.paths[path][method].responses['200'].description : ''
-          }))) : []
+          responses: json.apis[0].response ? json.apis[0].response.map(res => ({
+            name: res.field,
+            type: res.type,
+            description: res.description
+          })) : []
         });
       } catch (error) {
         alert('잘못된 JSON 파일입니다.');
@@ -246,6 +261,39 @@ const PostAPI = () => {
     };
     reader.readAsText(file);
   };
+
+  // API 호출 함수 추가
+  const getFisheryValueFutureOceanicData = async (serviceKey, longitude, latitude, date, responseType = 'json') => {
+    const baseUrl = apiDetails.endpoint;
+    
+    const url = new URL(baseUrl);
+    url.searchParams.append('serviceKey', serviceKey);
+    url.searchParams.append('longitude', longitude);
+    url.searchParams.append('latitude', latitude);
+    url.searchParams.append('date', date);
+    if (responseType) {
+        url.searchParams.append('_type', responseType);
+    }
+
+    try {
+        const response = await fetch(url.toString(), {
+            method: apiDetails.method.toUpperCase()
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        if (responseType === 'json') {
+            return await response.json();
+        } else {
+            return await response.text();
+        }
+    } catch (error) {
+        console.error('Error fetching the API:', error);
+        throw error;
+    }
+  }
 
   return (
     <S.AppContainer>
@@ -309,11 +357,11 @@ const PostAPI = () => {
               <label>
                 Method:
                 <S.RadioGroup>
-                  <label><input type="radio" name="method" value="get" checked={apiDetails.method === 'get'} onChange={handleInputChange} /> GET</label>
-                  <label><input type="radio" name="method" value="post" checked={apiDetails.method === 'post'} onChange={handleInputChange} /> POST</label>
-                  <label><input type="radio" name="method" value="put" checked={apiDetails.method === 'put'} onChange={handleInputChange} /> PUT</label>
-                  <label><input type="radio" name="method" value="patch" checked={apiDetails.method === 'patch'} onChange={handleInputChange} /> PATCH</label>
-                  <label><input type="radio" name="method" value="delete" checked={apiDetails.method === 'delete'} onChange={handleInputChange} /> DELETE</label>
+                  <label><input type="radio" name="method" value="GET" checked={apiDetails.method === 'GET'} onChange={handleInputChange} /> GET</label>
+                  <label><input type="radio" name="method" value="POST" checked={apiDetails.method === 'POST'} onChange={handleInputChange} /> POST</label>
+                  <label><input type="radio" name="method" value="PUT" checked={apiDetails.method === 'PUT'} onChange={handleInputChange} /> PUT</label>
+                  <label><input type="radio" name="method" value="PATCH" checked={apiDetails.method === 'PATCH'} onChange={handleInputChange} /> PATCH</label>
+                  <label><input type="radio" name="method" value="DELETE" checked={apiDetails.method === 'DELETE'} onChange={handleInputChange} /> DELETE</label>
                 </S.RadioGroup>
               </label>
               <label>

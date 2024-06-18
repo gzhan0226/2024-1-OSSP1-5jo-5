@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import SearchBar from "../../component/common/SearchBar";
 import * as S from './writeStyle';
 import axios from 'axios';
@@ -13,6 +14,7 @@ const WriteBoard = () => {
   const [title, setTitle] = useState('');
   const [apiName, setApiName] = useState('');
   const [content, setContent] = useState('');
+  const userId = Cookies.get('user_id');
 
   useEffect(() => {
     if (location.state) {
@@ -42,6 +44,7 @@ const WriteBoard = () => {
         navigate('/board');
       } catch (error) {
         alert('게시글 작성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        console.error('Submission error:', error.response ? error.response.data : error.message);
       }
     }
   };
@@ -57,20 +60,25 @@ const WriteBoard = () => {
   const createPost = async () => {
     const type = boardType === 'free' ? 'general' : 'question';
     const requestBody = {
-      user_id: 1, // Example user_id, replace with actual user id
+      user_id: userId,
       title,
       content,
     };
 
     if (type === 'question') {
-      requestBody.api_id = 1; // Example api_id, replace with actual api id
+      requestBody.api_id = apiName;
     }
 
-    const response = await axios.post(`http://localhost:8080/api/${type}`, requestBody);
-    if (response.data.code === 201) {
-      alert(response.data.message);
-    } else {
-      throw new Error(response.data.message);
+    try {
+      const response = await axios.post(`http://localhost:8080/api/${type}`, requestBody);
+      if (response.data.code === 201) {
+        alert(response.data.message);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error('Create post error:', error.response ? error.response.data : error.message);
+      throw error;
     }
   };
 
@@ -81,11 +89,16 @@ const WriteBoard = () => {
       content,
     };
 
-    const response = await axios.put(`http://localhost:8080/api/${type}?forum_id=1&${type === 'general' ? 'general_id' : 'question_id'}=${postId}`, requestBody);
-    if (response.data.code === 200) {
-      alert(response.data.message);
-    } else {
-      throw new Error(response.data.message);
+    try {
+      const response = await axios.put(`http://localhost:8080/api/${type}?forum_id=1&${type === 'general' ? 'general_id' : 'question_id'}=${postId}`, requestBody);
+      if (response.data.code === 200) {
+        alert(response.data.message);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error('Update post error:', error.response ? error.response.data : error.message);
+      throw error;
     }
   };
 

@@ -13,11 +13,10 @@ const ReadFree = () => {
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [newCommentContent, setNewCommentContent] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
-  const [replyContent, setReplyContent] = useState({});
-  const [editingReplyId, setEditingReplyId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const commentsPerPage = 5;
-  const userId = Cookies.get('user_id'); // 쿠키에서 사용자 ID를 가져옵니다.
+  const userId = Cookies.get('user_id');
+  const Admin_account = Cookies.get('Admin_account');
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -77,6 +76,7 @@ const ReadFree = () => {
   const toggleCommentBox = () => {
     setShowCommentBox(!showCommentBox);
     setEditingCommentId(null);
+    setNewCommentContent('');
   };
 
   const handleNewCommentChange = (e) => {
@@ -96,7 +96,13 @@ const ReadFree = () => {
       });
 
       if (response.data.code === 201) {
-        setComments([...comments, response.data.result]);
+        const newComment = response.data.result;
+        setComments(prevComments => [...prevComments, {
+          ...newComment,
+          user_id: userId,
+          content: newCommentContent,
+          creation_date: new Date().toISOString(),
+        }]);
         setNewCommentContent('');
         setShowCommentBox(false);
       } else {
@@ -108,52 +114,10 @@ const ReadFree = () => {
     }
   };
 
-  const toggleReplyBox = (commentId) => {
-    setComments(comments.map(comment =>
-      comment.id === commentId
-        ? { ...comment, showReplyBox: !comment.showReplyBox }
-        : comment
-    ));
-  };
-
-  const handleReplyChange = (commentId, content) => {
-    setReplyContent({ ...replyContent, [commentId]: content });
-  };
-
-  const handleReplySubmit = async (commentId) => {
-    const content = replyContent[commentId]?.trim();
-    if (!content) {
-      alert('답글을 입력하세요.');
-      return;
-    }
-
-    try {
-      const response = await axios.post(`http://localhost:8080/api/general/comment?forum_id=1&general_id=${postId}`, {
-        user_id: userId,
-        content,
-        parent_id: commentId,
-      });
-
-      if (response.data.code === 201) {
-        setComments(comments.map(comment =>
-          comment.id === commentId
-            ? { ...comment, replies: [...comment.replies, response.data.result], showReplyBox: false }
-            : comment
-        ));
-        setReplyContent({ ...replyContent, [commentId]: '' });
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error('Reply submit error:', error);
-      alert('답글 작성 중 오류가 발생했습니다.');
-    }
-  };
-
   const handleCommentEdit = (commentId, content) => {
     setEditingCommentId(commentId);
     setNewCommentContent(content);
-    setShowCommentBox(true);
+    setShowCommentBox(false);  // Hide the new comment box when editing a comment
   };
 
   const handleCommentUpdate = async () => {
@@ -173,7 +137,6 @@ const ReadFree = () => {
         ));
         setEditingCommentId(null);
         setNewCommentContent('');
-        setShowCommentBox(false);
       } else {
         alert(response.data.message);
       }
@@ -205,6 +168,16 @@ const ReadFree = () => {
 
   const totalCommentPages = Math.ceil(comments.length / commentsPerPage);
 
+  const validateComment = (comment) => {
+    if (!comment) return {};
+    return {
+      id: comment.id || 'Unknown',
+      user_id: comment.user_id || 'Unknown',
+      content: comment.content || '',
+      creation_date: comment.creation_date || new Date().toISOString(),
+    };
+  };
+
   return (
     <S.AppContainer>
       <S.MainContentWrapper>
@@ -216,19 +189,22 @@ const ReadFree = () => {
             </S.PostTitleBox>
             <S.PostMetaBox>
               <S.PostMeta>
-                <span>작성자: {post.authorId}</span>
-                <span>작성일: {post.date}</span>
+                <span>작성자: {post.user_id}</span>
+                <span>작성일: {new Date(post.date).toLocaleDateString()}</span>
               </S.PostMeta>
             </S.PostMetaBox>
             <S.PostContentBox>
               <p>{post.content}</p>
             </S.PostContentBox>
-            {userId === post.authorId && (
+            {(userId === post.user_id || Admin_account === 1) && (
               <S.PostActions>
                 <button onClick={handleEditPost}>수정</button>
                 <button onClick={handleDeletePost}>삭제</button>
               </S.PostActions>
             )}
+            <S.PostActions>
+              <button onClick={() => navigate('/board')}>목록으로</button>
+            </S.PostActions>
             <S.CommentsSection>
               <S.CommentsHeader>
                 <h3>댓글</h3>
@@ -244,77 +220,40 @@ const ReadFree = () => {
                   <button onClick={handleNewCommentSubmit}>{editingCommentId ? '수정' : '등록'}</button>
                 </S.CommentBox>
               )}
-              {currentComments.map((comment) => (
-                <S.CommentItem key={comment.id} isAuthor={comment.authorId === post.authorId}>
-                  <S.CommentMeta isAuthor={comment.authorId === post.authorId}>
-                    <span>작성자: {comment.authorId}</span>
-                    <span>작성일: {comment.date}</span>
-                  </S.CommentMeta>
-                  {editingCommentId === comment.id ? (
-                    <S.CommentBox>
-                      <textarea
-                        value={newCommentContent}
-                        onChange={handleNewCommentChange}
-                      />
-                      <button onClick={handleCommentUpdate}>수정</button>
-                    </S.CommentBox>
-                  ) : (
-                    <>
-                      <p>{comment.content}</p>
-                      {userId === comment.authorId && (
-                        <S.CommentActions>
-                          <button onClick={() => handleCommentEdit(comment.id, comment.content)}>수정</button>
-                          <button onClick={() => handleCommentDelete(comment.id)}>삭제</button>
-                        </S.CommentActions>
-                      )}
-                      <S.CommentActions>
-                        <button onClick={() => toggleReplyBox(comment.id)}>답글</button>
-                      </S.CommentActions>
-                      {comment.showReplyBox && editingReplyId === null && (
-                        <S.ReplyBox>
-                          <textarea
-                            value={replyContent[comment.id] || ''}
-                            onChange={(e) => handleReplyChange(comment.id, e.target.value)}
-                            placeholder="답글을 입력하세요"
-                          />
-                          <button onClick={() => handleReplySubmit(comment.id)}>등록</button>
-                        </S.ReplyBox>
-                      )}
-                      {comment.replies && comment.replies.map((reply) => (
-                        <S.ReplyItem key={reply.id}>
-                          <S.ReplyMeta>
-                            <span>작성자: {reply.authorId}</span>
-                            <span>작성일: {reply.date}</span>
-                          </S.ReplyMeta>
-                          {editingReplyId === reply.id ? (
-                            <S.ReplyBox>
-                              <textarea
-                                value={replyContent[comment.id] || ''}
-                                onChange={(e) => handleReplyChange(comment.id, e.target.value)}
-                              />
-                              <button onClick={() => handleReplySubmit(comment.id)}>수정</button>
-                            </S.ReplyBox>
-                          ) : (
-                            <>
-                              <p>{reply.content}</p>
-                              {userId === reply.authorId && (
-                                <S.ReplyActions>
-                                  <button>수정</button>
-                                  <button>삭제</button>
-                                </S.ReplyActions>
-                              )}
-                            </>
-                          )}
-                        </S.ReplyItem>
-                      ))}
-                    </>
-                  )}
-                </S.CommentItem>
-              ))}
+              {currentComments.map((comment) => {
+                const validatedComment = validateComment(comment);
+                return (
+                  <S.CommentItem key={validatedComment.id} isAuthor={validatedComment.user_id === post.user_id}>
+                    <S.CommentMeta isAuthor={validatedComment.user_id === post.user_id}>
+                      <span>작성자: {validatedComment.user_id}</span>
+                      <span>작성일: {new Date(validatedComment.creation_date).toLocaleDateString()}</span>
+                    </S.CommentMeta>
+                    {editingCommentId === validatedComment.id ? (
+                      <S.CommentBox>
+                        <textarea
+                          value={newCommentContent}
+                          onChange={handleNewCommentChange}
+                        />
+                        <button onClick={handleCommentUpdate}>수정</button>
+                      </S.CommentBox>
+                    ) : (
+                      <>
+                        <p>{validatedComment.content}</p>
+                        {(userId === validatedComment.user_id || Admin_account === 1) && (
+                          <S.CommentActions>
+                            <button onClick={() => handleCommentEdit(validatedComment.id, validatedComment.content)}>수정</button>
+                            <button onClick={() => handleCommentDelete(validatedComment.id)}>삭제</button>
+                          </S.CommentActions>
+                        )}
+                      </>
+                    )}
+                  </S.CommentItem>
+                );
+              })}
               <S.Pagination>
                 {Array.from({ length: totalCommentPages }, (_, i) => (
-                  <S.PaginationButton 
-                    key={i + 1} 
+                  <S.PaginationButton
+                    key={i + 1}
                     active={currentPage === i + 1}
                     onClick={() => setCurrentPage(i + 1)}
                   >
