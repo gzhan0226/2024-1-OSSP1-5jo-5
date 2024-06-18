@@ -21,7 +21,7 @@ export const TableWrapper = styled.div`
   display: flex;
   margin-left: auto;
   margin-right: auto;
-  width: 86%;
+  width: 90%;
   justify-content: space-between;
   margin-top: 4%;
 `;
