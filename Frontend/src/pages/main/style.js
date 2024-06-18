@@ -21,16 +21,25 @@ export const TableWrapper = styled.div`
   display: flex;
   margin-left: auto;
   margin-right: auto;
-  width: 90%;
+  width: 80%;
   justify-content: space-between;
-  margin-top: 4%;
+  margin-top: 10px;
+`;
+
+export const PWrapper = styled.div`
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  justify-content: space-between;
+  margin-top: 10px;
 `;
 
 export const TableWrapper2 = styled.div`
   display: flex;
   margin-left: auto;
   margin-right: auto;
-  width: 86%;
+  width: 80%;
   justify-content: space-between;
   margin-top: 4%;
   padding-bottom: 100px;

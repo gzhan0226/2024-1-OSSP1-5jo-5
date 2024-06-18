@@ -5,6 +5,7 @@ export const DisplayRow = styled.div`
   width: 82vw;
   display: 960px;
   background-color: rgb(245, 245, 251);
+  padding-bottom: 150px;
 `;
 
 export const PageContainer = styled.div`
@@ -22,6 +23,7 @@ export const CardGrid = styled.div`
   margin-right: auto;
   padding-top: 3%;
   padding-bottom: 5%;
+  min-height: 700px;
 `;
 
 export const CardGridItem = styled.div`

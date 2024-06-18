@@ -1,35 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import ApiCard from "../../component/searchResult/ApiCard";
 import DetailedView from "../searchResult/DetailResult";
 import * as S from "./Style";
 import SearchBar from "../../component/common/SearchBar";
 
-const SearchResultPage = () => {
+const CategoryResultPage = () => {
   const location = useLocation();
   const [selectedApi, setSelectedApi] = useState(null);
-  const [apiData, setApiData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 추가
-  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 추가
 
-  const endpoint = location.state?.endpoint || "http://localhost:8080/api/list";
-  const resultMessage =
-    location.state?.resultMessage || "전체 API를 검색한 결과";
-
-  useEffect(() => {
-    fetch(`${endpoint}?sort=likes&page=${currentPage}`) // 페이지 번호 추가
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(endpoint);
-        console.log(data);
-        setApiData(data.result);
-        setTotalPages(data.totalPages); // 총 페이지 수 설정
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-        setApiData([]);
-      });
-  }, [endpoint, currentPage]); 
+  const result = location.state?.result || [];
+  const totalPages = location.state?.totalPages || 1;
+  const resultMessage = location.state?.resultMessage || "전체 API를 검색한 결과";
 
   const handleApiClick = (api) => {
     setSelectedApi(api);
@@ -43,7 +26,7 @@ const SearchResultPage = () => {
     setCurrentPage((prevPage) => {
       if (direction === "prev" && prevPage > 1) {
         return prevPage - 1;
-      } else if (direction === "next" && prevPage < totalPages) {
+      } else if (direction === "next") {
         return prevPage + 1;
       } else {
         return prevPage;
@@ -58,7 +41,7 @@ const SearchResultPage = () => {
           <SearchBar isDetailActive={selectedApi !== null} />
           <p style={{ fontSize: "20px", marginLeft: "10%" }}>{resultMessage}</p>
           <S.CardGrid>
-            {apiData.map((api, index) => (
+            {result.map((api, index) => (
               <S.CardGridItem key={index} onClick={() => handleApiClick(api)}>
                 <ApiCard
                   icon={api.favicon || "/img/default_api.png"}
@@ -77,7 +60,7 @@ const SearchResultPage = () => {
             >
               이전
             </S.PaginationItem>
-            <span>{currentPage} / {totalPages}</span>
+            <span>{currentPage}</span>
             <S.PaginationItem
               onClick={() => handlePageChange("next")}
               disabled={currentPage === totalPages}
@@ -94,4 +77,4 @@ const SearchResultPage = () => {
   );
 };
 
-export default SearchResultPage;
+export default CategoryResultPage;

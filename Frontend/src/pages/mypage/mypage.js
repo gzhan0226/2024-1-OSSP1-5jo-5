@@ -26,7 +26,7 @@ const MyPage = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/users?user_email=admin@example.com"
+          "http://localhost:8080/api/users"
         );
         setUserData(response.data.result);
       } catch (err) {
