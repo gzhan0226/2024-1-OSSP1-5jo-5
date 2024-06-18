@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 export const MainWrapper = styled.div`
   background-color: rgb(245, 245, 251);
-  width: 100vh;
+  width: 84vw;
 `;
 
 export const BannerWrapper = styled.div`
@@ -21,7 +21,17 @@ export const TableWrapper = styled.div`
   display: flex;
   margin-left: auto;
   margin-right: auto;
+  width: 90%;
+  justify-content: space-between;
+  margin-top: 4%;
+`;
+
+export const TableWrapper2 = styled.div`
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
   width: 86%;
   justify-content: space-between;
   margin-top: 4%;
+  padding-bottom: 100px;
 `;

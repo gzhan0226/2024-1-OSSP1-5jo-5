@@ -180,6 +180,6 @@ const search = async (req, res) => {
 
 router.get("/", getList);
 router.get("/top", getTopList);
-router.get("/search", search);
+router.post("/search", search);
 
 module.exports = router;
