@@ -16,36 +16,23 @@ const createGeneral = (req, res) => {
     return res
       .status(400)
       .json({ code: 400, message: "user_id, title, content are required" });
-
-  const userQuery = "select * from Users where user_id = ?";
-  connection.query(userQuery, [user_id], (userErr, userResults) => {
-    if (userErr) {
-      console.error("database user query error: ", userErr);
-      return res
-        .status(500)
-        .json({ code: 500, message: "database user query error" });
-    }
-    if (userResults.length === 0)
-      return res.status(400).json({ code: 400, message: "Invalid user_id" });
-
-    const GeneralforumQuery =
-      "insert into Generalforum (user_id, title, content) values (?, ?, ?)";
-    connection.query(
-      GeneralforumQuery,
-      [user_id, title, content],
-      (err, result) => {
-        if (err) {
-          console.error("database Generalforum query error: ", err);
-          return res
-            .status(500)
-            .json({ code: 500, message: "database Generalforum query error" });
-        }
-        res
-          .status(201)
-          .json({ code: 201, message: "general created successfully" });
+  const GeneralforumQuery =
+    "insert into Generalforum (user_id, title, content) values (?, ?, ?)";
+  connection.query(
+    GeneralforumQuery,
+    [user_id, title, content],
+    (err, result) => {
+      if (err) {
+        console.error("database Generalforum query error: ", err);
+        return res
+          .status(500)
+          .json({ code: 500, message: "database Generalforum query error" });
       }
-    );
-  });
+      res
+        .status(201)
+        .json({ code: 201, message: "general created successfully" });
+    }
+  );
 };
 
 // 자유 게시판 상세 조회
