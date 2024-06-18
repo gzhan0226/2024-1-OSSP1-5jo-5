@@ -12,7 +12,7 @@ export const MainContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: rgb(245, 245, 251);
-`;  
+`;
 
 export const MainContent = styled.div`
   width: 120%;
@@ -188,72 +188,6 @@ export const CommentActions = styled.div`
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-
-    &:hover {
-      background-color: #4050D4;
-    }
-  }
-`;
-
-export const ReplyItem = styled.div`
-  padding: 10px;
-  border: 1px solid #8A94FF;
-  border-radius: 5px;
-  margin-top: 10px;
-  background-color: #F0F4FF;
-`;
-
-export const ReplyMeta = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-`;
-
-export const ReplyActions = styled.div`
-  margin-top: 10px;
-
-  button {
-    padding: 8px 12px;
-    margin-right: 10px;
-    background-color: #5060FF;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-
-    &:hover {
-      background-color: #4050D4;
-    }
-  }
-`;
-
-export const ReplyBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
-
-  textarea {
-    width: calc(100% - 10px);
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #8A94FF;
-    border-radius: 4px;
-    height: 80px;
-    background-color: #ffffff;
-  }
-
-  button {
-    width: 5%;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    background-color: #5060FF;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
 
     &:hover {
       background-color: #4050D4;
