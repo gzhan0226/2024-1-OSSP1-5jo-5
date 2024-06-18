@@ -1,3 +1,4 @@
+//index.js
 const passport = require("passport");
 const local = require("./localStrategy");
 const connection = require("../Database/db");

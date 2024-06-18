@@ -6,7 +6,7 @@ const connection = require("./Database/db");
 
 const session = require("express-session");
 const passport = require("passport");
-const passportConfig = require("./passport");
+const passportConfig = require("./Passport");
 
 const app = express();
 app.use(bodyParser.json());
@@ -30,9 +30,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const loginRoutes = require("./Routes/login");
-app.use("/login", loginRoutes);
+app.use("/api/login", loginRoutes);
 const userRoutes = require("./Routes/users");
-app.use("/users", userRoutes);
+app.use("/api/users", userRoutes);
 const apiRoutes = require("./Routes/apilist");
 app.use("/api/list", apiRoutes);
 const apiDataRoutes = require("./Routes/apiData");
