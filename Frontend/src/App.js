@@ -17,8 +17,6 @@ import MyPagePost from "./pages/mypage/mypagePost";
 import InputResultPage from "../src/pages/searchResult/InputResultPage"
 import CategoryResultPage from "./pages/searchResult/CatagoryResult";
 
-
-
 const App = () => {
   return (
     <Router>
