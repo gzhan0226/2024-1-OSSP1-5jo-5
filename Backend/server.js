@@ -10,8 +10,12 @@ const passportConfig = require("./Passport");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+let corsOptions = {
+  origin: true, // 출처 허용 옵션
+  credentials: true, // 사용자 인증이 필요한 리소스(쿠키 ..등) 접근
+};
 
+app.use(cors(corsOptions));
 passportConfig(); // 패스포트 설정
 
 app.use(
