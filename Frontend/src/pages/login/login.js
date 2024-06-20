@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../component/user/UserContext';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const userContext = useContext(UserContext); // Use useContext to access setUser
 
   // 로그 추가
-  console.log('UserContext:', userContext);
+  console.log("UserContext:", userContext);
 
   const handleLogin = async () => {
     try {
@@ -22,10 +22,6 @@ const Login = () => {
       });
 
       if (response.data.user_id) {
-        Cookies.set('user_id', response.data.user_id, { expires: 7 });
-        Cookies.set('user_name', response.data.user_name, { expires: 7 });
-        Cookies.set('user_email', response.data.user_email, { expires: 7 });
-        Cookies.set('levelpoint', response.data.levelpoint, { expires: 7 });
         userContext.setUser(response.data); // UserContext를 업데이트합니다
         alert('로그인 성공');
         navigate('/');
@@ -33,12 +29,16 @@ const Login = () => {
         alert(response.data);
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         alert(error.response.data.message);
       } else {
-        alert('로그인 중 오류가 발생했습니다.');
+        alert("로그인 중 오류가 발생했습니다.");
       }
-      console.error('Login error:', error);
+      console.error("Login error:", error);
     }
   };
 
@@ -47,7 +47,7 @@ const Login = () => {
   };
 
   const handleStartNow = () => {
-    navigate('/signup');
+    navigate("/signup");
   };
 
   return (

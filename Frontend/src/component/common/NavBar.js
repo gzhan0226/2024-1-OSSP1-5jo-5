@@ -21,8 +21,8 @@ import {
   FaInfoCircle,
   FaUserCircle,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from '../../component/user/UserContext'; // Import UserContext
+import { redirect, useNavigate } from "react-router-dom";
+import { UserContext } from "../../component/user/UserContext"; // Import UserContext
 
 const NavBar = () => {
   const { user } = useContext(UserContext); // Use useContext to access user
@@ -48,7 +48,16 @@ const NavBar = () => {
       navigate("/login");
     }
   };
-
+  const loginClick = () => {
+    navigate("/login");
+  };
+  const logout = async () => {
+    try {
+      await axios.get(`http://localhost:8080/api/login/logout`);
+    } catch (err) {}
+    navigate("/");
+    window.location.reload();
+  };
   return (
     <NavBarContainer>
       <Logo>
@@ -75,12 +84,21 @@ const NavBar = () => {
           </MenuIcon>
           <span>Q&A</span>
         </MenuItem>
-        <MenuItem>
+        {user ? (
+          <MenuItem onClick={logout}>
+            <MenuIcon>
+              <FaInfoCircle />
+            </MenuIcon>
+            <span>로그아웃</span>
+          </MenuItem>
+        ) : (
+          <MenuItem onClick={loginClick}>
           <MenuIcon>
             <FaInfoCircle />
           </MenuIcon>
-          <span>사이트 소개</span>
+            <span>로그인</span>
         </MenuItem>
+        )}
       </MenuItemContainer>
       <UserProfile>
         <FaUserCircle size={40} />
