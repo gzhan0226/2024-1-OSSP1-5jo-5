@@ -24,8 +24,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     secret: process.env.SECRET,
+
     cookie: {
-      secure: false,
+      sameSite: "None",
+      secure: true,
     },
   })
 );
