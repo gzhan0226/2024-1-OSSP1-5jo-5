@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react"; // Import useContext
 import axios from "axios";
 import Cookies from "js-cookie";
 import {
@@ -9,7 +9,6 @@ import {
   UserName,
   UserStatus,
   Logo,
-  LogoText,
   LogoIcon,
   TitleDochi,
   TitleApis,
@@ -23,52 +22,11 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from '../../component/user/UserContext'; // Import UserContext
 
 const NavBar = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(UserContext); // Use useContext to access user
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log('Cookies:', Cookies.get());
-
-    const user_id = Cookies.get('user_id');
-    const user_name = Cookies.get('user_name');
-    const user_email = Cookies.get('user_email');
-    const levelpoint = Cookies.get('levelpoint');
-
-    console.log('User Info from Cookies:', { user_id, user_name, user_email, levelpoint });
-
-    if (user_id && user_name && user_email && levelpoint) {
-      setUser({
-        user_id,
-        user_name,
-        user_email,
-        levelpoint,
-      });
-    } else {
-      const fetchUserProfile = async () => {
-        try {
-          const response = await axios.get('http://localhost:8080/api/users');
-          if (response.data.code === 200) {
-            setUser(response.data.result);
-            Cookies.set('user_id', response.data.result.user_id, { expires: 7 });
-            Cookies.set('user_name', response.data.result.user_name, { expires: 7 });
-            Cookies.set('user_email', response.data.result.user_email, { expires: 7 });
-            Cookies.set('levelpoint', response.data.result.levelpoint, { expires: 7 });
-            console.log('User Info from API:', response.data.result);
-          }
-        } catch (error) {
-          console.error('Error fetching user profile:', error);
-        }
-      };
-
-      fetchUserProfile();
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log('User state:', user);
-  }, [user]);
 
   const homeClick = () => {
     navigate("/");
@@ -93,7 +51,7 @@ const NavBar = () => {
 
   return (
     <NavBarContainer>
-      <Logo onClick={homeClick}>
+      <Logo>
         <TitleDochi>도치</TitleDochi>
         <TitleApis>APIS</TitleApis>
         <LogoIcon src="/img/dochi.png" alt="Dochi" />
@@ -117,12 +75,12 @@ const NavBar = () => {
           </MenuIcon>
           <span>Q&A</span>
         </MenuItem>
-        {/* <MenuItem>
+        <MenuItem>
           <MenuIcon>
             <FaInfoCircle />
           </MenuIcon>
           <span>사이트 소개</span>
-        </MenuItem> */}
+        </MenuItem>
       </MenuItemContainer>
       <UserProfile>
         <FaUserCircle size={40} />

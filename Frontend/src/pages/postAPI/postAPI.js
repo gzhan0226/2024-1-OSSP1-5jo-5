@@ -6,8 +6,7 @@ import * as S from './postAPIStyle';
 
 const PostAPI = () => {
   const categories = ["AI", "IT", "SNS", "건강", "게임", "과학", "교육", "교통", "금융", "날씨", "뉴스 & 미디어", "부동산", "비디오 & 이미지", "쇼핑", "스포츠", "식음료", "에너지", "여행", "예술 & 엔터테인먼트", "기타"];
-  const userId = 1;
-  // const userId = Cookies.get('user_id');
+  const userId = Cookies.get('user_id');
 
   const [apiDetails, setApiDetails] = useState({
     name: '',
@@ -158,12 +157,12 @@ const PostAPI = () => {
       return;
     }
   
-    setIsSubmitting(true); // Disable the button
+    setIsSubmitting(true);
   
     // API 등록 로직
     try {
       const requestBody = {
-        user_id: 1, // 실제 user_id를 동적으로 할당해야 합니다.
+        user_id: Cookies.get('user_id'),
         name: apiDetails.name,
         description: apiDetails.description,
         category: apiDetails.category,

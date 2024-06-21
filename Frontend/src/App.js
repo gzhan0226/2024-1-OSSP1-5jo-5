@@ -14,34 +14,37 @@ import ReadFree from "./pages/readfree/readFree";
 import ReadQnA from "./pages/readqna/readQnA";
 import Board from "./pages/board/board";
 import MyPagePost from "./pages/mypage/mypagePost";
+import { UserProvider } from "./component/user/UserContext";
 import InputResultPage from "../src/pages/searchResult/InputResultPage"
 import CategoryResultPage from "./pages/searchResult/CatagoryResult";
 
 const App = () => {
   return (
-    <Router>
-      <div className="container">
-        <NavBar />
-        <div className="search-bar">
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/allresult" element={<SearchResultPage />} />
-            <Route path="/api-details/:id" element={<ApiDetailPage />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/board" element={<Board />} />
-            <Route path="/postAPI" element={<PostAPI />} />
-            <Route path="/write" element={<WriteBoard />} />
-            <Route path="/readFree/:postId" element={<ReadFree />} />
-            <Route path="/readQnA/:postId" element={<ReadQnA />} />
-            <Route path="/mypage/postdetail" element={<MyPagePost />} />
-            <Route path="/search-results" element={<InputResultPage />} />
-            <Route path="/category-result" element={<CategoryResultPage />} />
-          </Routes>
+    <UserProvider>
+      <Router>
+        <div className="container">
+          <NavBar />
+          <div className="search-bar">
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/allresult" element={<SearchResultPage />} />
+              <Route path="/api-details/:id" element={<ApiDetailPage />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/mypage" element={<MyPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/board" element={<Board />} />
+              <Route path="/postAPI" element={<PostAPI />} />
+              <Route path="/write" element={<WriteBoard />} />
+              <Route path="/readFree/:postId" element={<ReadFree />} />
+              <Route path="/readQnA/:postId" element={<ReadQnA />} />
+              <Route path="/mypage/postdetail" element={<MyPagePost />} />
+              <Route path="/search-results" element={<InputResultPage />} />
+              <Route path="/category-result" element={<CategoryResultPage />} />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </UserProvider>
   );
 };
 

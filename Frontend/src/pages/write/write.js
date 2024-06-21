@@ -14,14 +14,24 @@ const WriteBoard = () => {
   const [title, setTitle] = useState('');
   const [apiName, setApiName] = useState('');
   const [content, setContent] = useState('');
-  const userId = Cookies.get('user_id');
+  const [userId, setUserId] = useState('');
+
+  useEffect(() => {
+    const userId = Cookies.get('user_id');
+    if (userId) {
+      setUserId(userId);
+    } else {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (location.state) {
       const { post, type } = location.state;
       setIsEditMode(true);
       setPostId(post.id);
-      setBoardType(type === 'general' ? 'free' : 'qna');
+      setBoardType(type === 'general' ? 'free' : 'qna');  
       setTitle(post.title);
       setContent(post.content);
       if (type === 'question') {
@@ -34,18 +44,19 @@ const WriteBoard = () => {
     const emptyFields = checkEmptyFields();
     if (emptyFields.length > 0) {
       alert(`비어 있는 공간이 있습니다: ${emptyFields.join(', ')}`);
-    } else {
-      try {
-        if (isEditMode) {
-          await updatePost();
-        } else {
-          await createPost();
-        }
-        navigate('/board');
-      } catch (error) {
-        alert('게시글 작성 중 오류가 발생했습니다. 다시 시도해 주세요.');
-        console.error('Submission error:', error.response ? error.response.data : error.message);
+      return;
+    }
+
+    try {
+      if (isEditMode) {
+        await updatePost();
+      } else {
+        await createPost();
       }
+      navigate('/board');
+    } catch (error) {
+      alert('게시글 작성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      console.error('Submission error:', error.response ? error.response.data : error.message);
     }
   };
 
@@ -70,7 +81,9 @@ const WriteBoard = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:8080/api/${type}`, requestBody);
+      console.log('Creating post:', requestBody);
+      const response = await axios.post(`http://localhost:8080/api/${type}`, requestBody, { withCredentials: true });
+      console.log('Create response:', response.data);
       if (response.data.code === 201) {
         alert(response.data.message);
       } else {
@@ -89,8 +102,14 @@ const WriteBoard = () => {
       content,
     };
 
+    if (type === 'question') {
+      requestBody.api_id = apiName;
+    }
+
     try {
-      const response = await axios.put(`http://localhost:8080/api/${type}?forum_id=1&${type === 'general' ? 'general_id' : 'question_id'}=${postId}`, requestBody);
+      console.log('Updating post:', requestBody);
+      const response = await axios.put(`http://localhost:8080/api/${type}?forum_id=1&${type === 'general' ? 'general_id' : 'question_id'}=${postId}`, requestBody, { withCredentials: true });
+      console.log('Update response:', response.data);
       if (response.data.code === 200) {
         alert(response.data.message);
       } else {

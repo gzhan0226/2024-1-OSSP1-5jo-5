@@ -5,6 +5,7 @@ import ProfileBox from "./profileBox";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ApiCard from "../../component/searchResult/ApiCard";
+import Cookies from "js-cookie";
 
 const MyPage = () => {
   const [userData, setUserData] = useState(null);
@@ -12,15 +13,15 @@ const MyPage = () => {
   const [enrollApis, setEnrollApis] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [general, setGeneral] = useState([]);
-
   const [error, setError] = useState(null);
 
-  const likeEndpoint = "http://localhost:8080/api/like/list?user_id=1";
-  const enrollEndpoint = "http://localhost:8080/api/list?user_id=1";
-  const questionEndpoint =
-    "http://localhost:8080/api/forums?type=question&user_id=1";
-  const generalEndpoint =
-    "http://localhost:8080/api/forums?type=general&user_id=1";
+  const userId = Cookies.get('user_id');
+  const userEmail = Cookies.get('user_email');
+
+  const likeEndpoint = `http://localhost:8080/api/like/list?user_id=${userId}`;
+  const enrollEndpoint = `http://localhost:8080/api/list?user_id=${userId}`;
+  const questionEndpoint = `http://localhost:8080/api/forums?type=question&user_id=${userId}`;
+  const generalEndpoint = `http://localhost:8080/api/forums?type=general&user_id=${userId}`;
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -76,7 +77,7 @@ const MyPage = () => {
     fetchLikedApis();
     fetchEnrollApis();
     fetchQuestions();
-  }, []);
+  }, [likeEndpoint, enrollEndpoint, generalEndpoint, questionEndpoint, userEmail]);
 
   const navigate = useNavigate();
 
@@ -116,7 +117,7 @@ const MyPage = () => {
     });
   };
 
-  //말줄임표
+  // 말줄임표
   const truncate = (str, maxLength) => {
     return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
   };
