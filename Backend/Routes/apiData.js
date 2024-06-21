@@ -88,10 +88,6 @@ const getAPIData = async (req, res) => {
 
 const insertAPIData = async (req, res) => {
   const data = req.body;
-  if (!req.user) {
-    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  }
-  const user_id = req.user.user_id;
   if (
     !data.name ||
     !data.description ||
@@ -99,8 +95,8 @@ const insertAPIData = async (req, res) => {
     !data.base_url ||
     !data.pricepolicy ||
     data.example_code_provided === undefined ||
-    !user_id ||
-    !data.endpoints
+    !data.endpoints ||
+    !data.user_id
   )
     return res
       .status(400)
@@ -115,7 +111,7 @@ const insertAPIData = async (req, res) => {
       data.base_url,
       data.pricepolicy,
       data.example_code_provided ? 1 : 0,
-      user_id,
+      data.user_id,
     ]);
     const apiId = results.insertId;
 
