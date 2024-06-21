@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import * as S from "./style";
 import {
   Container, Table, Thead, Tbody, Tr, Th, Td
-} from "./style";  // Assuming style.js is in the same directory
+} from "./style";  
 import SearchBar from "../../component/common/SearchBar";
 
 const ApiDetailPage = () => {
@@ -89,25 +89,31 @@ const ApiDetailPage = () => {
         </Tr>
       </Thead>
       <Tbody>
-        {data.sort((a, b) => includeRequired ? b.required - a.required : 0)
-          .map((item, index) => (
-            <Tr key={index}>
-              <Td>{item.name}</Td>
-              <Td>{item.description}</Td>
-              {includeRequired && (
+        {data.length > 0 ? (
+          data.sort((a, b) => includeRequired ? b.required - a.required : 0)
+            .map((item, index) => (
+              <Tr key={index}>
+                <Td>{item.name}</Td>
+                <Td>{item.description}</Td>
+                {includeRequired && (
+                  <Td>
+                    <S.RequiredTag required={item.required}>
+                      {item.required ? "필수" : "선택"}
+                    </S.RequiredTag>
+                  </Td>
+                )}
                 <Td>
-                  <S.RequiredTag required={item.required}>
-                    {item.required ? "필수" : "선택"}
-                  </S.RequiredTag>
+                  <S.StatusTag {...S.getStatusColor('type', item.type || "null")}>
+                    {item.type || "null"}
+                  </S.StatusTag>
                 </Td>
-              )}
-              <Td>
-                <S.StatusTag {...S.getStatusColor('type', item.type || "null")}>
-                  {item.type || "null"}
-                </S.StatusTag>
-              </Td>
-            </Tr>
-          ))}
+              </Tr>
+            ))
+        ) : (
+          <Tr>
+            <Td colSpan={includeRequired ? 4 : 3}>제공처에서 지정한 값이 없어요</Td>
+          </Tr>
+        )}
       </Tbody>
     </Table>
   );
@@ -180,18 +186,22 @@ const ApiDetailPage = () => {
           {selected && (
             <>
               <S.P>REQUEST변수</S.P>
-              {renderTable(selected.requests, true)}
+              {renderTable(selected.requests || [], true)}
               <S.P>RESPONSE 변수</S.P>
-              {renderTable(selected.responses)}
+              {renderTable(selected.responses || [])}
             </>
           )}
 
           <S.P>해당 API에 달린 질문들 </S.P>
-          <ul>
-            {questions.map((question, index) => (
-              <li key={index}>{question}</li>
-            ))}
-          </ul>
+          {questions.length > 0 ? (
+            <ul>
+              {questions.map((question, index) => (
+                <li key={index}>{question}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>아직 등록된 질문이 없어요</p>
+          )}
 
         </S.Endpoint>
       </S.InfoContainer>

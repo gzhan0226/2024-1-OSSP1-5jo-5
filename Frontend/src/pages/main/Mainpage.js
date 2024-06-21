@@ -4,7 +4,7 @@ import CategoryIcons from "../../component/main/CategoryIcons";
 import PostBoard from "../../component/main/PostBoard";
 import Table from "../../component/main/Table";
 import SearchBar from "../../component/common/SearchBar";
-import * as S from "./style";
+import * as S from "./Style";
 import PostBoard2 from "../../component/main/PostBoard2";
 
 const MainPage = () => {

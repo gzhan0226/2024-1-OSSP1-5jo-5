@@ -7,11 +7,7 @@ const connection = require("../Database/db");
 
 // 자유 게시판 작성
 const createGeneral = (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  }
-  const user_id = req.user.user_id;
-  const { title, content } = req.body;
+  const { user_id, title, content } = req.body;
   if (!user_id || !title || !content)
     return res
       .status(400)
@@ -82,16 +78,12 @@ const getGeneralDetails = (req, res) => {
 
 // 질문 게시판 수정
 const updateGeneral = (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  }
   const general_id = req.query.general_id;
   const { title, content } = req.body;
   if (!general_id || !title || !content)
     return res
       .status(400)
       .json({ code: 400, message: "general_id, title, content is required" });
-  const IDquery = "SELECT user_id FROM Generalforum WHERE id = ?";
 
   const query = "update Generalforum set title = ?, content = ? where id = ?";
   connection.query(query, [title, content, general_id], (err, results) => {
@@ -113,9 +105,6 @@ const updateGeneral = (req, res) => {
 
 // 자유 게시판 삭제
 const deleteGeneral = (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  }
   const general_id = req.query.general_id;
   if (!general_id)
     return res.status(400).json({ code: 400, error: "general_id is required" });
