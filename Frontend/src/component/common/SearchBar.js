@@ -40,7 +40,6 @@ const SearchBar = ({ isDetailActive }) => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyPress={handleKeyPress}
           placeholder="검색하고자하는 API를 입력해보세요!"
         />
         <SearchButton onClick={handleSearch}>

@@ -26,7 +26,10 @@ const MyPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/users?user_email=${userEmail}`);
+        const response = await axios.get(
+          "http://localhost:8080/api/users"
+        );
+        console.log(response);
         setUserData(response.data.result);
       } catch (err) {
         setError("An error occurred while fetching data");

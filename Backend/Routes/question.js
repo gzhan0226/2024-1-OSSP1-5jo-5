@@ -7,11 +7,7 @@ const connection = require("../Database/db");
 
 // 질문 게시판 작성
 const createQuestion = (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  }
-  const user_id = req.user.user_id;
-  const { api_id, title, content } = req.body;
+  const { api_id, user_id, title, content } = req.body;
   if (!api_id || !user_id || !title || !content)
     return res
       .status(400)
@@ -90,9 +86,6 @@ const getQuestionDetails = (req, res) => {
 
 // 질문 게시판 수정
 const updateQuestion = (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  }
   const question_id = req.query.question_id;
   const { title, content } = req.body;
   if (!question_id || !title || !content)
@@ -119,9 +112,6 @@ const updateQuestion = (req, res) => {
 
 // 질문 게시판 삭제
 const deleteQuestion = (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ code: 401, message: "로그인이 필요합니다." });
-  }
   const question_id = req.query.question_id;
   if (!question_id)
     return res.status(400).json({ error: "question_id is required" });

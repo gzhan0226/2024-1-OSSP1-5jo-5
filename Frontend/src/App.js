@@ -4,7 +4,7 @@ import NavBar from "./component/common/NavBar";
 import MainPage from "./pages/main/Mainpage";
 import "./App.css";
 import SearchResultPage from "./pages/searchResult/SearchResultPage";
-import ApiDetailPage from "./pages/apidetail/ApiDetailPage";
+import ApiDetailPage from "./pages/apiDetail/ApiDetailPage";
 import SignUp from "./pages/signup/signup";
 import MyPage from "./pages/mypage/mypage";
 import Login from "./pages/login/login";
@@ -14,8 +14,9 @@ import ReadFree from "./pages/readfree/readFree";
 import ReadQnA from "./pages/readqna/readQnA";
 import Board from "./pages/board/board";
 import MyPagePost from "./pages/mypage/mypagePost";
-import InputResultPage from "../src/pages/searchResult/InputResultPage";
 import { UserProvider } from "./component/user/UserContext";
+import InputResultPage from "../src/pages/searchResult/InputResultPage"
+import CategoryResultPage from "./pages/searchResult/CatagoryResult";
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
               <Route path="/readQnA/:postId" element={<ReadQnA />} />
               <Route path="/mypage/postdetail" element={<MyPagePost />} />
               <Route path="/search-results" element={<InputResultPage />} />
+              <Route path="/category-result" element={<CategoryResultPage />} />
             </Routes>
           </div>
         </div>
